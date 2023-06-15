@@ -218,6 +218,59 @@ function color_util.hex_palette_to_hsv_palette(hex_palette:HexPalette):HsvPalett
    }
 end
 
+function color_util.add_contrast(palette:HsvPalette, contrast:number):HsvPalette
+   asserts.that(contrast ~= nil and palette ~= nil)
+
+   local standard_foreground_brightness = 0.85
+   local standard_background_brightness = 0.2
+   local mid_brightness = standard_background_brightness + 0.2 * (standard_foreground_brightness - standard_background_brightness)
+
+   local function adjust(color:HsvColor):HsvColor
+      local new_brightness = util.clamp(mid_brightness + (color.v - mid_brightness) * contrast, 0, 1)
+      return HsvColor(color.h, color.s, new_brightness)
+   end
+
+   return {
+      name = palette.name,
+      background_mode = palette.background_mode,
+      background = adjust(palette.background),
+      foreground = adjust(palette.foreground),
+      accents = {
+         adjust(palette.accents[1]),
+         adjust(palette.accents[2]),
+         adjust(palette.accents[3]),
+         adjust(palette.accents[4]),
+         adjust(palette.accents[5]),
+         adjust(palette.accents[6]),
+         adjust(palette.accents[7]),
+      }
+   }
+end
+
+function color_util.offset_saturation(palette:HsvPalette, offset:number):HsvPalette
+   asserts.that(offset ~= nil and palette ~= nil)
+
+   local function adjust(color:HsvColor):HsvColor
+      return HsvColor(color.h, util.clamp(color.s + offset, 0, 1), color.v)
+   end
+
+   return {
+      name = palette.name,
+      background_mode = palette.background_mode,
+      background = adjust(palette.background),
+      foreground = adjust(palette.foreground),
+      accents = {
+         adjust(palette.accents[1]),
+         adjust(palette.accents[2]),
+         adjust(palette.accents[3]),
+         adjust(palette.accents[4]),
+         adjust(palette.accents[5]),
+         adjust(palette.accents[6]),
+         adjust(palette.accents[7]),
+      }
+   }
+end
+
 class.setup(color_util, "color_util")
 
 return color_util

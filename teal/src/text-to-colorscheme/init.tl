@@ -22,20 +22,44 @@ function api.setup(settings_overrides:UserSettings)
    _impl:setup(settings_overrides)
 end
 
-function api.get_palette():HsvPalette
+local function ensure_initialized()
    asserts.that(_impl ~= nil, "[text-to-colorscheme] Must call setup() first before other api methods")
+end
+
+function api.get_palette():HsvPalette
+   ensure_initialized()
    return _impl:lazy_get_current_palette()
 end
 
 function api.load()
-   asserts.that(_impl ~= nil, "[text-to-colorscheme] Must call setup() first before other api methods")
+   ensure_initialized()
    _impl:reload_default()
 end
 
 function api.set_palette(palette:HsvPalette)
-   asserts.that(_impl ~= nil, "[text-to-colorscheme] Must call setup() first before other api methods")
+   ensure_initialized()
    _impl:set_current_palette(palette)
    _impl:apply_current_palette()
+end
+
+function api.set_contrast(contrast:number)
+   ensure_initialized()
+   _impl:set_contrast(contrast)
+end
+
+function api.add_contrast(offset:number)
+   ensure_initialized()
+   _impl:add_contrast(offset)
+end
+
+function api.set_saturation_offset(offset:number)
+   ensure_initialized()
+   _impl:set_saturation_offset(offset)
+end
+
+function api.add_saturation_offset(offset:number)
+   ensure_initialized()
+   _impl:add_saturation_offset(offset)
 end
 
 function api.user_save_current_palette()

@@ -99,7 +99,9 @@ return {
 }
 -------
 
-It is important that the accent colors all be visually distinct from each other.  Return only the new lua code and nothing else.
+Note that this is for \"dark mode\" and therefore the foreground and accent colors should all be brighter than the background color.  It is also important that the accent colors all be visually distinct from each other.
+
+Return only the new lua code and nothing else.
 ]]
 
    local example_messages:{string:string} = get_example_messages()

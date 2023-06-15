@@ -56,4 +56,17 @@ function util.shuffle(list:{any}):{any}
     return list
 end
 
+function util.shallow_clone<T>(source:T):T
+   if source is table then
+      local copy = {}
+      for orig_key, orig_value in pairs(source) do
+         copy[orig_key] = orig_value
+      end
+      return copy as T
+   end
+
+   -- number, string, boolean, etc
+   return source
+end
+
 return util

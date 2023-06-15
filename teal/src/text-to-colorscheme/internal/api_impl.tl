@@ -21,6 +21,9 @@ local record ApiImpl
    _palette_provider:PaletteProvider
    _open_ai:OpenAi
    _current_palette:HsvPalette
+   _modified_palette:HsvPalette
+   _modified_palette_contrast:number
+   _modified_palette_saturation_offset:number
 
    metamethod __call: function(self: ApiImpl): ApiImpl
 end
@@ -31,6 +34,10 @@ function ApiImpl:__init()
    self._palette_provider = PaletteProvider()
    self._open_ai = OpenAi()
    self._current_palette = null
+
+   self._modified_palette = null
+   self._modified_palette_saturation_offset = 0
+   self._modified_palette_contrast = 1
 end
 
 function ApiImpl:setup(settings_overrides:UserSettings)
@@ -42,6 +49,11 @@ end
 function ApiImpl:lazy_get_current_palette():HsvPalette
    if self._current_palette == null then
       self._current_palette = self._palette_provider:get_default(self._user_settings, vim.o.background)
+      asserts.that(self._modified_palette == null)
+   end
+
+   if self._modified_palette ~= null then
+      return self._modified_palette
    end
 
    return self._current_palette
@@ -87,13 +99,21 @@ function ApiImpl:apply_current_palette()
    log.debug("Updated colors for %s highlight groups", update_count)
 end
 
+function ApiImpl:_reset_modified_palette()
+   self._modified_palette = null
+   self._modified_palette_saturation_offset = 0
+   self._modified_palette_contrast = 1
+end
+
 function ApiImpl:reload_default()
    self._current_palette = null
+   self:_reset_modified_palette()
    self:apply_current_palette()
 end
 
 function ApiImpl:set_current_palette(palette:HsvPalette)
    self._current_palette = palette
+   self:_reset_modified_palette()
 end
 
 function ApiImpl:generate_new_palette(theme_prompt:string, callback:function(HsvPalette))
@@ -105,14 +125,39 @@ function ApiImpl:generate_new_palette(theme_prompt:string, callback:function(Hsv
    end)
 end
 
-function ApiImpl:user_save_current_palette()
+function ApiImpl:_update_modified_palette()
+   asserts.that(self._modified_palette_contrast >= 0)
+   asserts.that(self._modified_palette_saturation_offset >= -1 and self._modified_palette_saturation_offset <= 1)
+
    local palette = self._current_palette
+   palette = color_util.add_contrast(palette, self._modified_palette_contrast)
+   palette = color_util.offset_saturation(palette, self._modified_palette_saturation_offset)
+   self._modified_palette = palette
 
-   if palette == nil then
-      log.error("Could not find any palette set")
-      return
-   end
+   self:apply_current_palette()
+end
 
+function ApiImpl:set_contrast(contrast:number)
+   asserts.that(self._current_palette ~= null)
+   self._modified_palette_contrast = util.clamp(contrast, 0, 2)
+   self:_update_modified_palette()
+end
+
+function ApiImpl:add_contrast(contrast:number)
+   self:set_contrast(self._modified_palette_contrast + contrast)
+end
+
+function ApiImpl:set_saturation_offset(offset:number)
+   asserts.that(self._current_palette ~= null)
+   self._modified_palette_saturation_offset = util.clamp(offset, -1, 1)
+   self:_update_modified_palette()
+end
+
+function ApiImpl:add_saturation_offset(offset:number)
+   self:set_saturation_offset(self._modified_palette_saturation_offset + offset)
+end
+
+function ApiImpl:user_save_current_palette()
    local function create_scratch_buffer():integer
       local buf = vim.api.nvim_create_buf(false, true)
 
@@ -124,8 +169,8 @@ function ApiImpl:user_save_current_palette()
    end
 
    local text:string = [[
--- To save the current theme persistently, copy the following entry to custom_palettes
--- into the call you're making to require("text-to-colorscheme").setup()
+-- To save the current theme persistently, copy the following into
+-- the call you're making to require("text-to-colorscheme").setup()
 
 ]]
 
@@ -141,6 +186,8 @@ function ApiImpl:user_save_current_palette()
          return string.format("\"%s\",\n", color_util.hsv_to_hex(hsv))
       end
    end
+
+   local palette = self:lazy_get_current_palette()
 
    text = text .. [[
 hsv_palettes = {
