@@ -260,6 +260,38 @@ function ApiImpl:shuffle_accents()
    self:_update_modified_palette()
 end
 
+function ApiImpl:_add_save_popup_highlights(buf:integer, palette:HexPalette)
+   local highlight_matches = {}
+   vim.api.nvim_command('highlight T2CSavePopupBackground guifg=#ffffff guibg=' .. palette.background)
+   table.insert(highlight_matches, {palette.background, "T2CSavePopupBackground"})
+   vim.api.nvim_command('highlight T2CSavePopupForeground guifg=' .. palette.foreground .. ' guibg=' .. palette.background)
+   table.insert(highlight_matches, {palette.foreground, "T2CSavePopupBackground"})
+   for index, value in ipairs(palette.accents) do
+      local highlight_name = 'T2CSavePopupAccent' .. tostring(index)
+      vim.api.nvim_command('highlight ' .. highlight_name .. ' guifg=' .. value .. ' guibg=' .. palette.background)
+      table.insert(highlight_matches, {value, highlight_name})
+   end
+
+   local ns_id = vim.api.nvim_create_namespace('T2CSavePopupHighlights')
+   local line_count = vim.api.nvim_buf_line_count(buf)
+
+   for i = 0, line_count - 1 do
+      local line = vim.api.nvim_buf_get_lines(buf, i, i+1, false)[1]
+
+      for _, pair in ipairs(highlight_matches) do
+         local text, highlight_group = table.unpack(pair)
+
+         if line:find(text) ~= nil then
+            local non_whitespace_start = line:find("%S")
+            if non_whitespace_start then
+               vim.api.nvim_buf_add_highlight(buf, ns_id, highlight_group, i, non_whitespace_start-1, #line)
+               break
+            end
+         end
+      end
+   end
+end
+
 function ApiImpl:user_save_current_palette()
    local function create_scratch_buffer():integer
       local buf = vim.api.nvim_create_buf(false, true)
@@ -333,6 +365,8 @@ function ApiImpl:user_save_current_palette()
       col = col,
       row = row
    })
+
+   self:_add_save_popup_highlights(buf, color_util.hsv_palette_to_hex_palette(palette))
 
    local cmd = string.format('autocmd WinLeave <buffer=%s> :bwipeout!', buf)
    vim.api.nvim_command('augroup MyCloseScratch')

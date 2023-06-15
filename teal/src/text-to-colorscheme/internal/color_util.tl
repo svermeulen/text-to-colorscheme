@@ -218,6 +218,24 @@ function color_util.hex_palette_to_hsv_palette(hex_palette:HexPalette):HsvPalett
    }
 end
 
+function color_util.hsv_palette_to_hex_palette(hsv_palette:HsvPalette):HexPalette
+   return {
+      name = hsv_palette.name,
+      background_mode = hsv_palette.background_mode,
+      background = color_util.hsv_to_hex(hsv_palette.background),
+      foreground = color_util.hsv_to_hex(hsv_palette.foreground),
+      accents = {
+         color_util.hsv_to_hex(hsv_palette.accents[1]),
+         color_util.hsv_to_hex(hsv_palette.accents[2]),
+         color_util.hsv_to_hex(hsv_palette.accents[3]),
+         color_util.hsv_to_hex(hsv_palette.accents[4]),
+         color_util.hsv_to_hex(hsv_palette.accents[5]),
+         color_util.hsv_to_hex(hsv_palette.accents[6]),
+         color_util.hsv_to_hex(hsv_palette.accents[7]),
+      }
+   }
+end
+
 function color_util.add_contrast(palette:HsvPalette, contrast:number):HsvPalette
    asserts.that(contrast ~= nil and palette ~= nil)
 
