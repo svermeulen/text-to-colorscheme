@@ -41,6 +41,10 @@ local function escape_for_command_line(message)
    return message
 end
 
+function log.notify(...)
+   vim.cmd('echomsg "' .. escape_for_command_line(format_message(...)) .. '"')
+end
+
 function log.info(...)
    if log.verbose then
       vim.cmd('echomsg "[text-to-colorscheme] ' .. escape_for_command_line(format_message(...)) .. '"')

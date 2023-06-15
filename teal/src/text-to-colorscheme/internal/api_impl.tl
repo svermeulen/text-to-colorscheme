@@ -195,8 +195,12 @@ end
 
 function ApiImpl:set_contrast(contrast:number)
    asserts.that(self._current_palette ~= null)
-   self._modified_palette_contrast = util.clamp(contrast, 0, 2)
+   if contrast < 0 then
+      contrast = 0
+   end
+   self._modified_palette_contrast = contrast
    self:_update_modified_palette()
+   log.notify("Contrast: %s", self._modified_palette_contrast)
 end
 
 function ApiImpl:add_contrast(contrast:number)
@@ -207,6 +211,7 @@ function ApiImpl:set_saturation_offset(offset:number)
    asserts.that(self._current_palette ~= null)
    self._modified_palette_saturation_offset = util.clamp(offset, -1, 1)
    self:_update_modified_palette()
+   log.notify("Saturation Offset: %s", self._modified_palette_saturation_offset)
 end
 
 function ApiImpl:add_saturation_offset(offset:number)
