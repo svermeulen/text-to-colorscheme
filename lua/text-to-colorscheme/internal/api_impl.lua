@@ -124,7 +124,7 @@ function ApiImpl:_touch_up_generated_palette(palette)
       local contrast = color.v - palette.background.v
 
       if contrast < min_fg_contrast then
-         return HsvColor(color.h, color.s, util.clamp(palette.background.v + min_fg_contrast))
+         return HsvColor(color.h, color.s, util.clamp(palette.background.v + min_fg_contrast, 0, 1))
       end
 
       return color
