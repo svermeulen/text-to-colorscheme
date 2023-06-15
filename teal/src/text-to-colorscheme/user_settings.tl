@@ -34,6 +34,7 @@ local record UserSettings
    default_palette:string
    verbose_logs:boolean
    gpt_model:GptModel
+   openai_api_key:string
 end
 
 return UserSettings

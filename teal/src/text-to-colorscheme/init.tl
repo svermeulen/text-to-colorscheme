@@ -43,15 +43,16 @@ function api.user_save_current_palette()
    _impl:user_save_current_palette()
 end
 
-function api.generate_new_palette(api_key:string, theme_prompt:string, callback:function(HsvPalette))
+function api.generate_new_palette(theme_prompt:string, callback:function(HsvPalette))
    asserts.that(_impl ~= nil, "[text-to-colorscheme] Must call setup() first before other api methods")
-   _impl:generate_new_palette(api_key, theme_prompt, callback)
+   _impl:generate_new_palette(theme_prompt, callback)
 end
 
-function api.generate_new_palette_and_apply(api_key:string, theme_prompt:string)
+function api.generate_new_palette_and_apply(theme_prompt:string)
    asserts.that(_impl ~= nil, "[text-to-colorscheme] Must call setup() first before other api methods")
+   asserts.that(theme_prompt ~= nil, "No theme provided to generate_new_palette_and_apply method")
 
-   api.generate_new_palette(api_key, theme_prompt, function(palette:HsvPalette)
+   _impl:generate_new_palette(theme_prompt, function(palette:HsvPalette)
       _impl:set_current_palette(palette)
       _impl:apply_current_palette()
    end)

@@ -6,6 +6,7 @@ return function():UserSettings
       undercurl = true,
       underline = true,
       gpt_model = "gpt-4",
+      openai_api_key = nil,
       verbose_logs = false,
       bold = true,
       italic = {

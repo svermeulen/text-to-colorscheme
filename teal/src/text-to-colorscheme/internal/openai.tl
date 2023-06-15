@@ -71,7 +71,10 @@ local function get_example_messages():{string:string}
    return result
 end
 
-function OpenAi:_construct_curl_command(api_key:string, theme_prompt:string, user_settings:UserSettings):{string}
+function OpenAi:_construct_curl_command(theme_prompt:string, user_settings:UserSettings):{string}
+
+   local api_key = user_settings.openai_api_key
+   asserts.that(api_key ~= nil and #api_key > 0, "No OpenAI API key provided!")
 
    local function escape_newlines(value:string):string
       local result, _ = value:gsub("\n", "\\n")
@@ -138,8 +141,8 @@ It is important that the accent colors all be visually distinct from each other.
   }
 end
 
-function OpenAi:generate_new_palette(api_key:string, theme_prompt:string, user_settings:UserSettings, callback:function(HexPalette))
-   asserts.that(theme_prompt ~= nil and api_key ~= nil, "Invalid parameters provided to generate_new_palette")
+function OpenAi:generate_new_palette(theme_prompt:string, user_settings:UserSettings, callback:function(HexPalette))
+   asserts.that(theme_prompt ~= nil, "Invalid parameters provided to generate_new_palette")
    asserts.that(user_settings.gpt_model ~= nil)
 
    log.info("Sending request to OpenAI...")
@@ -197,7 +200,7 @@ function OpenAi:generate_new_palette(api_key:string, theme_prompt:string, user_s
       vim.schedule(output_progress)
    end)
 
-   local curl_command = self:_construct_curl_command(api_key, theme_prompt, user_settings)
+   local curl_command = self:_construct_curl_command(theme_prompt, user_settings)
 
    -- if log.verbose then
    --    log.debug("Executing curl command: %s", vim.inspect(curl_command))

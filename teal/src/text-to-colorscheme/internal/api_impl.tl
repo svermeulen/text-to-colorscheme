@@ -96,8 +96,10 @@ function ApiImpl:set_current_palette(palette:HsvPalette)
    self._current_palette = palette
 end
 
-function ApiImpl:generate_new_palette(api_key:string, theme_prompt:string, callback:function(HsvPalette))
-   self._open_ai:generate_new_palette(api_key, theme_prompt, self._user_settings, function(openai_palette:HexPalette)
+function ApiImpl:generate_new_palette(theme_prompt:string, callback:function(HsvPalette))
+   asserts.that(self._user_settings.openai_api_key ~= nil, "No OpenAI API key provided!  Please provide to text-to-colorscheme setup() method and try again")
+
+   self._open_ai:generate_new_palette(theme_prompt, self._user_settings, function(openai_palette:HexPalette)
       log.info("Successfully received palette for theme '%s' from openai", theme_prompt)
       callback(color_util.hex_palette_to_hsv_palette(openai_palette))
    end)
