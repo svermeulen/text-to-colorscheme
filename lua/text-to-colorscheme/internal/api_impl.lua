@@ -164,6 +164,7 @@ function ApiImpl:lazy_generate_new_palette(theme_prompt, callback)
          log.info("Successfully received palette for theme '%s' from openai", theme_prompt)
          local hsv_palette = color_util.hex_palette_to_hsv_palette(openai_palette)
 
+
          callback(hsv_palette)
       end)
    else
