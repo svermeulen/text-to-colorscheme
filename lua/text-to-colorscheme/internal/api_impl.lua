@@ -191,20 +191,21 @@ function ApiImpl:user_save_current_palette()
 
    local palette = self:lazy_get_current_palette()
 
-   text = text .. [[ = {
-{
-   name = "]] .. palette.name .. [[",
-   background_mode = "]] .. palette.background_mode .. [[",
-   background = ]] .. custom_hsv_to_str(palette.background) .. [[
-   foreground = ]] .. custom_hsv_to_str(palette.foreground) .. [[
-   accents = {
-      ]] .. custom_hsv_to_str(palette.accents[1]) .. [[
-      ]] .. custom_hsv_to_str(palette.accents[2]) .. [[
-      ]] .. custom_hsv_to_str(palette.accents[3]) .. [[
-      ]] .. custom_hsv_to_str(palette.accents[4]) .. [[
-      ]] .. custom_hsv_to_str(palette.accents[5]) .. [[
-      ]] .. custom_hsv_to_str(palette.accents[6]) .. [[
-      ]] .. custom_hsv_to_str(palette.accents[7]) .. [[
+   text = text .. [[{
+   {
+      name = "]] .. palette.name .. [[",
+      background_mode = "]] .. palette.background_mode .. [[",
+      background = ]] .. custom_hsv_to_str(palette.background) .. [[
+      foreground = ]] .. custom_hsv_to_str(palette.foreground) .. [[
+      accents = {
+         ]] .. custom_hsv_to_str(palette.accents[1]) .. [[
+         ]] .. custom_hsv_to_str(palette.accents[2]) .. [[
+         ]] .. custom_hsv_to_str(palette.accents[3]) .. [[
+         ]] .. custom_hsv_to_str(palette.accents[4]) .. [[
+         ]] .. custom_hsv_to_str(palette.accents[5]) .. [[
+         ]] .. custom_hsv_to_str(palette.accents[6]) .. [[
+         ]] .. custom_hsv_to_str(palette.accents[7]) .. [[
+      }
    }
 }
 ]]

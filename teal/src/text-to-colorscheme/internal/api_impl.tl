@@ -191,7 +191,7 @@ function ApiImpl:user_save_current_palette()
 
    local palette = self:lazy_get_current_palette()
 
-   text = text .. [[ = {
+   text = text .. [[{
    {
       name = "]] .. palette.name .. [[",
       background_mode = "]] .. palette.background_mode .. [[",

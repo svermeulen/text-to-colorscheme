@@ -170,11 +170,12 @@ function OpenAi:generate_new_palette(theme_prompt, user_settings, callback)
 
    local function onexit(code)
       progress_timer:stop()
+      local all_data_str = table.concat(all_data, "")
+
       if code == 0 then
-         local all_data_str = table.concat(all_data, "")
          local response = vim.fn.json_decode(all_data_str)
 
-         if response then
+         if response and response.choices and #response.choices > 0 then
             local lua_str = response.choices[1].message.content
             log.debug("Received lua back from openai: '%s'", lua_str)
             local obj_provider = load(lua_str)
@@ -190,10 +191,10 @@ function OpenAi:generate_new_palette(theme_prompt, user_settings, callback)
             result.background_mode = "dark"
             callback(result)
          else
-            log.error("Unexpected response received from OpenAI")
+            log.error("Unexpected response received from OpenAI: %s", all_data_str)
          end
       else
-         log.error("Failure when communicating with OpenAI API.  Curl command exited with code '%s'", code)
+         log.error("Failure when communicating with OpenAI API.  Curl command exited with code '%s'.  Output: %s", code, all_data_str)
       end
    end
 
