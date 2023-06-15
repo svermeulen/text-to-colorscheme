@@ -99,7 +99,7 @@ return {
 }
 -------
 
-Note that this is for \"dark mode\" and therefore the foreground and accent colors should all be brighter than the background color.  It is also important that the accent colors all be visually distinct from each other.
+Note that this is for \"dark mode\" and therefore the foreground and accent colors should all be brighter than the background color.  Please also ensure that the accent colors are all at least somewhat visually distinct from each other.
 
 Return only the new lua code and nothing else.
 ]]

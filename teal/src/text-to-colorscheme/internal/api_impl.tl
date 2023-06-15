@@ -181,32 +181,32 @@ function ApiImpl:user_save_current_palette()
          local hsv_int = color_util.hsv_to_hsv_int(hsv)
          return string.format("{%s, %s, %s}, -- %s\n", hsv_int[1], hsv_int[2], hsv_int[3], color_util.hsv_to_hex(hsv))
       end
+      text = text .. "\nhsv_palettes = "
    else
       custom_hsv_to_str = function(hsv:HsvColor):string
          return string.format("\"%s\",\n", color_util.hsv_to_hex(hsv))
       end
+      text = text .. "\nhex_palettes = "
    end
 
    local palette = self:lazy_get_current_palette()
 
-   text = text .. [[
-hsv_palettes = {
-   {
-      name = "]] .. palette.name .. [[",
-      background_mode = "]] .. palette.background_mode .. [[",
-      background = ]] .. custom_hsv_to_str(palette.background) .. [[
-      foreground = ]] .. custom_hsv_to_str(palette.foreground) .. [[
-      accents = {
-         ]] .. custom_hsv_to_str(palette.accents[1]) .. [[
-         ]] .. custom_hsv_to_str(palette.accents[2]) .. [[
-         ]] .. custom_hsv_to_str(palette.accents[3]) .. [[
-         ]] .. custom_hsv_to_str(palette.accents[4]) .. [[
-         ]] .. custom_hsv_to_str(palette.accents[5]) .. [[
-         ]] .. custom_hsv_to_str(palette.accents[6]) .. [[
-         ]] .. custom_hsv_to_str(palette.accents[7]) .. [[
-      }
+   text = text .. [[ = {
+{
+   name = "]] .. palette.name .. [[",
+   background_mode = "]] .. palette.background_mode .. [[",
+   background = ]] .. custom_hsv_to_str(palette.background) .. [[
+   foreground = ]] .. custom_hsv_to_str(palette.foreground) .. [[
+   accents = {
+      ]] .. custom_hsv_to_str(palette.accents[1]) .. [[
+      ]] .. custom_hsv_to_str(palette.accents[2]) .. [[
+      ]] .. custom_hsv_to_str(palette.accents[3]) .. [[
+      ]] .. custom_hsv_to_str(palette.accents[4]) .. [[
+      ]] .. custom_hsv_to_str(palette.accents[5]) .. [[
+      ]] .. custom_hsv_to_str(palette.accents[6]) .. [[
+      ]] .. custom_hsv_to_str(palette.accents[7]) .. [[
    }
-},
+}
 ]]
    local contents = vim.tbl_flatten(util.split(text, "\n"))
 
