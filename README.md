@@ -89,6 +89,8 @@ Sometimes, some text prompts do not always translate well to a new color scheme 
 
 * `:T2CShuffleAccents` - Call this if you want to change which highlight groups the various colors are applied to.  It will randomize the order of the accent colors.  This is useful to try a few times to see if it improves the look and feel.  If you want more refined control over the order, you can run `:T2CSave`, then save your theme, then control the order manually.  This is helpful in particular if you prefer error highlights to be on the reddish side (which you can do by ensuring the most red color is ordered last)
 
+* `:T2CResetChanges` - This will reset all the changes made by the other commands here (T2CShuffleAccents, T2CAddContrast, T2CAddSaturation) and will return the color scheme to the exact values returned by ChatGPT (or the original values from your init.lua if loaded from there).
+
 For example - it may be helpful to add commands like the following, when generating new color schemes:
 
 ```

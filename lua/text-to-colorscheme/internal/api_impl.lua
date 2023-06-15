@@ -1,4 +1,4 @@
-local _tl_compat; if (tonumber((_VERSION or ''):match('[%d.]*$')) or 0) < 5.3 then local p, m = pcall(require, 'compat53.module'); if p then _tl_compat = m end end; local pairs = _tl_compat and _tl_compat.pairs or pairs; local string = _tl_compat and _tl_compat.string or string
+local _tl_compat; if (tonumber((_VERSION or ''):match('[%d.]*$')) or 0) < 5.3 then local p, m = pcall(require, 'compat53.module'); if p then _tl_compat = m end end; local ipairs = _tl_compat and _tl_compat.ipairs or ipairs; local pairs = _tl_compat and _tl_compat.pairs or pairs; local string = _tl_compat and _tl_compat.string or string; local table = _tl_compat and _tl_compat.table or table
 local class = require("text-to-colorscheme.internal.class")
 local GroupsProvider = require("text-to-colorscheme.internal.groups_provider")
 local PaletteProvider = require("text-to-colorscheme.internal.palette_provider")
@@ -28,6 +28,7 @@ local ApiImpl = {}
 
 
 
+
 function ApiImpl:__init()
    self._user_settings = default_settings_provider()
    self._groups_provider = GroupsProvider()
@@ -37,6 +38,7 @@ function ApiImpl:__init()
 
    self._modified_palette = null
    self._modified_palette_saturation_offset = 0
+   self._modified_palette_accent_order = { 1, 2, 3, 4, 5, 6, 7 }
    self._modified_palette_contrast = 1
 end
 
@@ -103,6 +105,7 @@ end
 function ApiImpl:_reset_modified_palette()
    self._modified_palette = null
    self._modified_palette_saturation_offset = 0
+   self._modified_palette_accent_order = { 1, 2, 3, 4, 5, 6, 7 }
    self._modified_palette_contrast = 1
 end
 
@@ -182,17 +185,27 @@ function ApiImpl:lazy_generate_new_palette_and_apply(theme_prompt)
    end)
 end
 
-function ApiImpl:_update_modified_palette(shuffle_accents)
+function ApiImpl:reset_changes()
+   self:_reset_modified_palette()
+   self:apply_current_palette()
+end
+
+function ApiImpl:_update_modified_palette()
    asserts.that(self._modified_palette_contrast >= 0)
    asserts.that(self._modified_palette_saturation_offset >= -1 and self._modified_palette_saturation_offset <= 1)
+   asserts.that(#self._modified_palette_accent_order == 7)
 
    local palette = self._current_palette
    palette = color_util.add_contrast(palette, self._modified_palette_contrast)
    palette = color_util.offset_saturation(palette, self._modified_palette_saturation_offset)
 
-   if shuffle_accents then
-      palette.accents = util.shuffle(palette.accents)
+   local new_accents = {}
+
+   for _, index in ipairs(self._modified_palette_accent_order) do
+      table.insert(new_accents, palette.accents[index])
    end
+
+   palette.accents = new_accents
 
    self._modified_palette = palette
 
@@ -205,7 +218,7 @@ function ApiImpl:set_contrast(contrast)
       contrast = 0
    end
    self._modified_palette_contrast = contrast
-   self:_update_modified_palette(false)
+   self:_update_modified_palette()
    log.notify("Contrast: %s", self._modified_palette_contrast)
 end
 
@@ -216,7 +229,7 @@ end
 function ApiImpl:set_saturation_offset(offset)
    asserts.that(self._current_palette ~= null)
    self._modified_palette_saturation_offset = util.clamp(offset, -1, 1)
-   self:_update_modified_palette(false)
+   self:_update_modified_palette()
    log.notify("Saturation Offset: %s", self._modified_palette_saturation_offset)
 end
 
@@ -226,7 +239,8 @@ end
 
 function ApiImpl:shuffle_accents()
    asserts.that(self._current_palette ~= null)
-   self:_update_modified_palette(true)
+   self._modified_palette_accent_order = util.shuffle({ 1, 2, 3, 4, 5, 6, 7 })
+   self:_update_modified_palette()
 end
 
 function ApiImpl:user_save_current_palette()
