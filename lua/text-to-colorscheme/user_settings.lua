@@ -37,4 +37,5 @@ local UserSettings = {ItalicSettings = {}, }
 
 
 
+
 return UserSettings
