@@ -123,14 +123,32 @@ end
 function ApiImpl:_touch_up_generated_palette(palette)
    local min_fg_contrast = self._user_settings.minimum_generated_foreground_contrast
 
-   local function adjust_foreground(color)
-      local contrast = color.v - palette.background.v
 
-      if contrast < min_fg_contrast then
-         return HsvColor(color.h, color.s, util.clamp(palette.background.v + min_fg_contrast, 0, 1))
+
+   local add_minimum_contrast = false
+
+   local darken_greens = true
+
+   local function adjust_foreground(fg)
+      if add_minimum_contrast then
+         local contrast = fg.v - palette.background.v
+
+         if contrast < min_fg_contrast then
+            fg = HsvColor(fg.h, fg.s, util.clamp(palette.background.v + min_fg_contrast, 0, 1))
+         end
       end
 
-      return color
+      if darken_greens then
+
+
+         local is_green = fg.h > 1 / 6 and fg.h < 1 / 2
+
+         if is_green then
+            fg = HsvColor(fg.h, fg.s, 0.85 * fg.v)
+         end
+      end
+
+      return fg
    end
 
    asserts.that(#palette.accents == 7)
@@ -166,8 +184,7 @@ function ApiImpl:lazy_generate_new_palette(theme_prompt, callback)
       self._open_ai:generate_new_palette(theme_prompt, self._user_settings, function(openai_palette)
          log.info("Successfully received palette for theme '%s' from openai", theme_prompt)
          local hsv_palette = color_util.hex_palette_to_hsv_palette(openai_palette)
-
-
+         hsv_palette = self:_touch_up_generated_palette(hsv_palette)
          callback(hsv_palette)
       end)
    else
