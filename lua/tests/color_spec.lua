@@ -1,11 +1,10 @@
-
+local _tl_compat; if (tonumber((_VERSION or ''):match('[%d.]*$')) or 0) < 5.3 then local p, m = pcall(require, 'compat53.module'); if p then _tl_compat = m end end; local ipairs = _tl_compat and _tl_compat.ipairs or ipairs
 require("busted")
 
-local RgbColor <const> = require("text-to-colorscheme.internal.rgb_color")
-local HsvColor <const> = require("text-to-colorscheme.hsv_color")
-local asserts <const> = require("text-to-colorscheme.internal.asserts")
-local util <const> = require("text-to-colorscheme.internal.util")
-local color_util <const> = require("text-to-colorscheme.internal.color_util")
+local RgbColor = require("text-to-colorscheme.internal.rgb_color")
+local HsvColor = require("text-to-colorscheme.hsv_color")
+local asserts = require("text-to-colorscheme.internal.asserts")
+local color_util = require("text-to-colorscheme.internal.color_util")
 
 describe("RgbColor", function()
    it("color_lerp", function()
@@ -22,7 +21,7 @@ describe("RgbColor", function()
 
    it("value_conversions", function()
 
-      -- Obtained by choosing random colors in paint.net (and then normalized)
+
       local expected_values = {
          { "#8effaa", RgbColor(0.556863, 1.0, 0.666667), HsvColor(0.372222, 0.44, 1.0) },
          { "#463268", RgbColor(0.27451, 0.196078, 0.407843), HsvColor(0.727778, 0.51, 0.4) },
@@ -36,11 +35,11 @@ describe("RgbColor", function()
          local rgb = values[2]
          local hsv = values[3]
 
-         -- test from_hex and to_hex
+
          asserts.that(rgb:is_approximately_equal(color_util.hex_to_rgb(hex), epsilon))
          asserts.is_equal(color_util.rgb_to_hex(color_util.hex_to_rgb(hex)), hex)
 
-         -- test from_rgb and to_rgb
+
          asserts.that(hsv:is_approximately_equal(color_util.rgb_to_hsv(rgb), epsilon))
 
          asserts.that(color_util.hsv_to_rgb(hsv):is_approximately_equal(rgb, epsilon))
@@ -61,4 +60,3 @@ describe("RgbColor", function()
       asserts.is_equal(hex_value, color_util.rgb_to_hex(color_util.hex_to_rgb(hex_value)))
    end)
 end)
-
