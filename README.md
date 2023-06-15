@@ -81,11 +81,13 @@ Note that in addition to adding to the `hex_palettes` list, we also need to set 
 
 ## Tweaking Theme
 
-Sometimes, some text prompts do not always translate well to a new color scheme on the first try.  One approach to fixing this is to modify the text prompt and try again.  In some cases though, the generated color scheme is good, and just needs some minor adjustments around contrast or saturation. For these cases, `text-to-colorscheme` comes with the following commands that help you do this:
+Sometimes, some text prompts do not always translate well to a new color scheme on the first try.  One approach to fixing this is to modify the text prompt and try again.  In some cases though, the generated color scheme is good, and just needs some minor adjustments around contrast, saturation, or color order. For these cases, `text-to-colorscheme` comes with the following commands that help you do this:
 
-* `:T2CAddContrast X` - Call this if you want the foreground colors to be more distinct from the background colors.  A positive value here will modify the current color scheme to have the foreground more distinct from the background, and a negative value will cause the foreground and background to become more similar.
+* `:T2CAddContrast X` - Call this if you want the foreground colors to be more or less distinct from the background colors.  A positive value here will modify the current color scheme to have the foreground more distinct from the background, and a negative value will cause the foreground and background to become more similar.
 
-* `:T2CAddSaturation X` - Call this if you want to reduce how intense the foreground colors are.  A lower value here means the color becomes more gray / washed-out.
+* `:T2CAddSaturation X` - Call this if you want to increase or reduce how intense the foreground colors are.  A lower value here means the color becomes more gray / washed-out.
+
+* `:T2CShuffleAccents` - Call this if you want to change which highlight groups the various colors are applied to.  It will randomize the order of the accent colors.  This is useful to try a few times to see if it improves the look and feel.  If you want more refined control over the order, you can run `:T2CSave`, then save your theme, then control the order manually.  This is helpful in particular if you prefer error highlights to be on the reddish side (which you can do by ensuring the most red color is ordered last)
 
 For example - it may be helpful to add commands like the following, when generating new color schemes:
 
@@ -95,9 +97,11 @@ vim.api.nvim_set_keymap('n', '<f10>', ':T2CAddContrast 0.1<cr>', {noremap = true
 
 vim.api.nvim_set_keymap('n', '<f11>', ':T2CAddSaturation -0.1<cr>', {noremap = true, silent = true})
 vim.api.nvim_set_keymap('n', '<f12>', ':T2CAddSaturation 0.1<cr>', {noremap = true, silent = true})
+
+vim.api.nvim_set_keymap('n', '<f8>', ':T2CShuffleAccents<cr>', {noremap = true, silent = true})
 ```
 
-It will be clear after toggling these keys what the effect of these commands are on the color scheme.  Note that once you are satisfied with the changes, you will want to save your theme using the `:T2CSave` command.  After saving it, you may also want to modify the order the colors are in so they better match (for eg. it's often best to have red-like colors last since these are used for errors)
+It will be clear after toggling these keys what the effect of these commands are on the color scheme.  Note that once you are satisfied with the changes, you will want to save your theme using the `:T2CSave` command.
 
 ## Advanced Configuration
 
