@@ -182,13 +182,18 @@ function ApiImpl:lazy_generate_new_palette_and_apply(theme_prompt:string)
    end)
 end
 
-function ApiImpl:_update_modified_palette()
+function ApiImpl:_update_modified_palette(shuffle_accents:boolean)
    asserts.that(self._modified_palette_contrast >= 0)
    asserts.that(self._modified_palette_saturation_offset >= -1 and self._modified_palette_saturation_offset <= 1)
 
    local palette = self._current_palette
    palette = color_util.add_contrast(palette, self._modified_palette_contrast)
    palette = color_util.offset_saturation(palette, self._modified_palette_saturation_offset)
+
+   if shuffle_accents then
+      palette.accents = util.shuffle(palette.accents)
+   end
+
    self._modified_palette = palette
 
    self:apply_current_palette()
@@ -200,7 +205,7 @@ function ApiImpl:set_contrast(contrast:number)
       contrast = 0
    end
    self._modified_palette_contrast = contrast
-   self:_update_modified_palette()
+   self:_update_modified_palette(false)
    log.notify("Contrast: %s", self._modified_palette_contrast)
 end
 
@@ -211,12 +216,17 @@ end
 function ApiImpl:set_saturation_offset(offset:number)
    asserts.that(self._current_palette ~= null)
    self._modified_palette_saturation_offset = util.clamp(offset, -1, 1)
-   self:_update_modified_palette()
+   self:_update_modified_palette(false)
    log.notify("Saturation Offset: %s", self._modified_palette_saturation_offset)
 end
 
 function ApiImpl:add_saturation_offset(offset:number)
    self:set_saturation_offset(self._modified_palette_saturation_offset + offset)
+end
+
+function ApiImpl:shuffle_accents()
+   asserts.that(self._current_palette ~= null)
+   self:_update_modified_palette(true)
 end
 
 function ApiImpl:user_save_current_palette()

@@ -111,4 +111,12 @@ function api.generate_new_palette_and_apply(theme_prompt)
    _impl:lazy_generate_new_palette_and_apply(theme_prompt)
 end
 
+function api.shuffle_accents()
+   if not lazy_init() then
+      return
+   end
+
+   _impl:shuffle_accents()
+end
+
 return api
