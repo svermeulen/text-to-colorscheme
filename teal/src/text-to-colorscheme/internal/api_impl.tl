@@ -163,7 +163,8 @@ function ApiImpl:lazy_generate_new_palette(theme_prompt:string, callback:functio
       self._open_ai:generate_new_palette(theme_prompt, self._user_settings, function(openai_palette:HexPalette)
          log.info("Successfully received palette for theme '%s' from openai", theme_prompt)
          local hsv_palette = color_util.hex_palette_to_hsv_palette(openai_palette)
-         hsv_palette = self:_touch_up_generated_palette(hsv_palette)
+         -- TODO - is this needed?
+         -- hsv_palette = self:_touch_up_generated_palette(hsv_palette)
          callback(hsv_palette)
       end)
    else
