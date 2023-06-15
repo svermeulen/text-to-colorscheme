@@ -35,6 +35,7 @@ local record UserSettings
    verbose_logs:boolean
    gpt_model:GptModel
    openai_api_key:string
+   minimum_generated_foreground_contrast:number
 end
 
 return UserSettings

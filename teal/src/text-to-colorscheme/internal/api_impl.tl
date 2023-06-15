@@ -117,6 +117,38 @@ function ApiImpl:set_current_palette(palette:HsvPalette)
    self:_reset_modified_palette()
 end
 
+function ApiImpl:_touch_up_generated_palette(palette:HsvPalette):HsvPalette
+   local min_fg_contrast = self._user_settings.minimum_generated_foreground_contrast
+
+   local function adjust_foreground(color:HsvColor):HsvColor
+      local contrast = color.v - palette.background.v
+
+      if contrast < min_fg_contrast then
+         return HsvColor(color.h, color.s, util.clamp(palette.background.v + min_fg_contrast))
+      end
+
+      return color
+   end
+
+   asserts.that(#palette.accents == 7)
+
+   return {
+      name = palette.name,
+      background_mode = palette.background_mode,
+      background = palette.background,
+      foreground = adjust_foreground(palette.foreground),
+      accents = {
+         adjust_foreground(palette.accents[1]),
+         adjust_foreground(palette.accents[2]),
+         adjust_foreground(palette.accents[3]),
+         adjust_foreground(palette.accents[4]),
+         adjust_foreground(palette.accents[5]),
+         adjust_foreground(palette.accents[6]),
+         adjust_foreground(palette.accents[7]),
+      }
+   }
+end
+
 function ApiImpl:lazy_generate_new_palette(theme_prompt:string, callback:function(HsvPalette))
    asserts.that(theme_prompt ~= nil, "No theme provided to generate_new_palette method")
 
@@ -130,7 +162,9 @@ function ApiImpl:lazy_generate_new_palette(theme_prompt:string, callback:functio
 
       self._open_ai:generate_new_palette(theme_prompt, self._user_settings, function(openai_palette:HexPalette)
          log.info("Successfully received palette for theme '%s' from openai", theme_prompt)
-         callback(color_util.hex_palette_to_hsv_palette(openai_palette))
+         local hsv_palette = color_util.hex_palette_to_hsv_palette(openai_palette)
+         hsv_palette = self:_touch_up_generated_palette(hsv_palette)
+         callback(hsv_palette)
       end)
    else
       log.info("Successfully found existing theme for prompt '%s'", theme_prompt)

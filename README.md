@@ -101,17 +101,17 @@ It will be clear after toggling these keys what the effect of these commands are
 
 ## Advanced Configuration
 
-Additional settings for `text-to-colorscheme` are:
+Additional settings (and default values) for `text-to-colorscheme` are:
 
 ```lua
 -- setup must be called before loading the colorscheme
 -- Default options:
 require("text-to-colorscheme").setup({
-  gpt_model = "gpt-4",
+  gpt_model = "gpt-4", -- eg. or "gpt-3.5-turbo"
   openai_api_key = nil,
   undercurl = true,
   underline = true,
-  verbose_logs = false,
+  verbose_logs = false, -- When true, will output logs to echom, to help debugging
   bold = true,
   italic = {
      strings = true,
@@ -121,21 +121,22 @@ require("text-to-colorscheme").setup({
   },
   strikethrough = true,
   invert_selection = false,
-  save_as_hsv = false,
+  save_as_hsv = false, -- When true, T2CSave will save colors as HSV instead of hex
   invert_signs = false,
   invert_tabline = false,
   invert_intend_guides = false,
   inverse = true,
   dim_inactive = false,
+  minimum_generated_foreground_contrast = 50, -- This is used to touch up the generated theme to avoid generating foregrounds that match the background too closely
   transparent_mode = false,
   hsv_palettes = {},
   hex_palettes = {},
   overrides = {},
-  default_palette = "urban autumn", -- aka gruvbox
+  default_palette = "urban autumn", -- aka gruvbox. Override to use something from hsv_palettes or hex_palettes
 })
 ```
 
-Note that the implementation of `text-to-colorscheme` was originally forked from [gruvbox.nvim](https://github.com/ellisonleao/gruvbox.nvim) which is why it has similar options
+Note that the implementation of `text-to-colorscheme` was originally forked from the great [gruvbox.nvim plugin](https://github.com/ellisonleao/gruvbox.nvim) which is why it has similar options
 
 ## Highlight Group Overrides
 

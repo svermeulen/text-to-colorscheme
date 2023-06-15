@@ -7,6 +7,7 @@ return function():UserSettings
       underline = true,
       gpt_model = "gpt-4",
       openai_api_key = nil,
+      minimum_generated_foreground_contrast = 50,
       verbose_logs = false,
       bold = true,
       italic = {
