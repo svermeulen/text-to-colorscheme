@@ -23,7 +23,9 @@ Inside `init.lua`
 vim.o.background = "dark"
 
 require('text-to-colorscheme').setup {
-  openai_api_key = "<OPENAI_API_KEY>",
+  ai = {
+    openai_api_key = "<OPENAI_API_KEY>",
+  },
 }
 
 vim.cmd([[colorscheme text-to-colorscheme]])
@@ -51,11 +53,13 @@ After finding a theme that you want to keep, you can have this persist across vi
 :T2CSave
 ```
 
-This should present a popup vim buffer with the color palette that was generated.  You can then copy the contents of this buffer into your call to `require('text-to-colorscheme').setup`.  For example, if using a text prompt of 'jungle' and then running `T2CSave`, the change to `init.lua` might look like this:
+This should present a popup vim buffer with the color palette that was generated, with each color also automatically highlighted.  You can then copy the contents of this buffer into the `init.lua` call to `require('text-to-colorscheme').setup`.  For example, if using a text prompt of 'jungle' and then running `T2CSave`, the change to `init.lua` might look like this:
 
 ```
 require('text-to-colorscheme').setup {
-  openai_api_key = "<OPENAI_API_KEY>",
+  ai = {
+    openai_api_key = "<OPENAI_API_KEY>",
+  },
   hex_palettes = {
      {
         name = "jungle",
@@ -115,11 +119,17 @@ Additional settings (and default values) for `text-to-colorscheme` are:
 -- setup must be called before loading the colorscheme
 -- Default options:
 require("text-to-colorscheme").setup({
-  gpt_model = "gpt-4", -- eg. or "gpt-3.5-turbo"
-  openai_api_key = nil,
+  ai = {
+     gpt_model = "gpt-4",
+     openai_api_key = nil, -- Set your own OpenAI API key to this value
+     green_darkening_amount = 0.85, -- Often, the generated theme results in green colors that seem to our human eyes to be more bright than it actually is, therefore this is a fudge factor to account for this, to darken greens to better match the brightness of other colors.  Enabled or disabled with auto_darken_greens flag
+     auto_darken_greens = true,
+     minimum_foreground_contrast = 0.4, -- This is used to touch up the generated theme to avoid generating foregrounds that match the background too closely.  Enabled or disabled with enable_minimum_foreground_contrast flag
+     enable_minimum_foreground_contrast = true,
+  },
   undercurl = true,
   underline = true,
-  verbose_logs = false, -- When true, will output logs to echom, to help debugging
+  verbose_logs = false, -- When true, will output logs to echom, to help debugging issues with this plugin
   bold = true,
   italic = {
      strings = true,
@@ -135,7 +145,6 @@ require("text-to-colorscheme").setup({
   invert_intend_guides = false,
   inverse = true,
   dim_inactive = false,
-  minimum_generated_foreground_contrast = 50, -- This is used to touch up the generated theme to avoid generating foregrounds that match the background too closely
   transparent_mode = false,
   hsv_palettes = {},
   hex_palettes = {},

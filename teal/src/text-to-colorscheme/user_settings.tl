@@ -15,7 +15,17 @@ local record UserSettings
       folds:boolean
    end
 
+   record AiSettings
+      gpt_model:GptModel
+      openai_api_key:string
+      auto_darken_greens:boolean
+      green_darkening_amount:number
+      minimum_foreground_contrast:number
+      enable_minimum_foreground_contrast:boolean
+   end
+
    save_as_hsv:boolean
+
    undercurl:boolean
    underline:boolean
    bold:boolean
@@ -33,9 +43,7 @@ local record UserSettings
    hsv_palettes:{HsvPaletteInt}
    default_palette:string
    verbose_logs:boolean
-   gpt_model:GptModel
-   openai_api_key:string
-   minimum_generated_foreground_contrast:number
+   ai:AiSettings
 end
 
 return UserSettings

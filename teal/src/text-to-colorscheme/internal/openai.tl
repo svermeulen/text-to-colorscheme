@@ -73,7 +73,7 @@ end
 
 function OpenAi:_construct_curl_command(theme_prompt:string, user_settings:UserSettings):{string}
 
-   local api_key = user_settings.openai_api_key
+   local api_key = user_settings.ai.openai_api_key
    asserts.that(api_key ~= nil and #api_key > 0, "No OpenAI API key provided!")
 
    local function escape_newlines(value:string):string
@@ -126,7 +126,7 @@ Return only the new lua code and nothing else.
     '-H', 'Content-Type: application/json',
     '-H', 'Authorization: Bearer ' .. api_key,
     '-d', [[{
-      "model": "]] .. user_settings.gpt_model .. [[",
+      "model": "]] .. user_settings.ai.gpt_model .. [[",
       "temperature": 0,
       "messages": [
         {
@@ -145,7 +145,7 @@ end
 
 function OpenAi:generate_new_palette(theme_prompt:string, user_settings:UserSettings, callback:function(HexPalette))
    asserts.that(theme_prompt ~= nil, "Invalid parameters provided to generate_new_palette")
-   asserts.that(user_settings.gpt_model ~= nil)
+   asserts.that(user_settings.ai.gpt_model ~= nil)
 
    log.info("Sending request to OpenAI...")
 

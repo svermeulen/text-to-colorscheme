@@ -121,16 +121,10 @@ function ApiImpl:set_current_palette(palette)
 end
 
 function ApiImpl:_touch_up_generated_palette(palette)
-   local min_fg_contrast = self._user_settings.minimum_generated_foreground_contrast
-
-
-
-   local add_minimum_contrast = false
-
-   local darken_greens = true
+   local min_fg_contrast = self._user_settings.ai.minimum_foreground_contrast
 
    local function adjust_foreground(fg)
-      if add_minimum_contrast then
+      if self._user_settings.ai.enable_minimum_foreground_contrast then
          local contrast = fg.v - palette.background.v
 
          if contrast < min_fg_contrast then
@@ -138,13 +132,13 @@ function ApiImpl:_touch_up_generated_palette(palette)
          end
       end
 
-      if darken_greens then
+      if self._user_settings.ai.auto_darken_greens then
 
 
          local is_green = fg.h > 1 / 6 and fg.h < 1 / 2
 
          if is_green then
-            fg = HsvColor(fg.h, fg.s, 0.85 * fg.v)
+            fg = HsvColor(fg.h, fg.s, self._user_settings.ai.green_darkening_amount * fg.v)
          end
       end
 
@@ -179,7 +173,7 @@ function ApiImpl:lazy_generate_new_palette(theme_prompt, callback)
    if existing_palette == nil then
       log.info("No existing theme for prompt '%s' found.  Generating new one...", theme_prompt)
 
-      asserts.that(self._user_settings.openai_api_key ~= nil, "No OpenAI API key provided!  Please provide to text-to-colorscheme setup() method and try again")
+      asserts.that(self._user_settings.ai.openai_api_key ~= nil, "No OpenAI API key provided!  Please provide to text-to-colorscheme setup() method and try again")
 
       self._open_ai:generate_new_palette(theme_prompt, self._user_settings, function(openai_palette)
          log.info("Successfully received palette for theme '%s' from openai", theme_prompt)
@@ -265,7 +259,7 @@ function ApiImpl:_add_save_popup_highlights(buf, palette)
    vim.api.nvim_command('highlight T2CSavePopupBackground guifg=#ffffff guibg=' .. palette.background)
    table.insert(highlight_matches, { palette.background, "T2CSavePopupBackground" })
    vim.api.nvim_command('highlight T2CSavePopupForeground guifg=' .. palette.foreground .. ' guibg=' .. palette.background)
-   table.insert(highlight_matches, { palette.foreground, "T2CSavePopupBackground" })
+   table.insert(highlight_matches, { palette.foreground, "T2CSavePopupForeground" })
    for index, value in ipairs(palette.accents) do
       local highlight_name = 'T2CSavePopupAccent' .. tostring(index)
       vim.api.nvim_command('highlight ' .. highlight_name .. ' guifg=' .. value .. ' guibg=' .. palette.background)
