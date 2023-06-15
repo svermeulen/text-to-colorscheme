@@ -2,7 +2,6 @@
 local ApiImpl = require("text-to-colorscheme.internal.api_impl")
 local UserSettings = require("text-to-colorscheme.user_settings")
 local HsvPalette = require("text-to-colorscheme.hsv_palette")
-local asserts = require("text-to-colorscheme.internal.asserts")
 
 local _impl
 
@@ -28,7 +27,7 @@ function api.setup(settings_overrides)
       return
    end
 
-   _impl:setup(settings_overrides)
+   _impl:change_settings(settings_overrides)
 end
 
 function api.get_palette()
@@ -101,7 +100,7 @@ function api.generate_new_palette(theme_prompt, callback)
       return
    end
 
-   _impl:generate_new_palette(theme_prompt, callback)
+   _impl:lazy_generate_new_palette(theme_prompt, callback)
 end
 
 function api.generate_new_palette_and_apply(theme_prompt)
@@ -109,12 +108,7 @@ function api.generate_new_palette_and_apply(theme_prompt)
       return
    end
 
-   asserts.that(theme_prompt ~= nil, "No theme provided to generate_new_palette_and_apply method")
-
-   _impl:generate_new_palette(theme_prompt, function(palette)
-      _impl:set_current_palette(palette)
-      _impl:apply_current_palette()
-   end)
+   _impl:lazy_generate_new_palette_and_apply(theme_prompt)
 end
 
 return api

@@ -100,14 +100,19 @@ function PaletteProvider:_try_get_user_palette(name:string, user_settings:UserSe
    return nil
 end
 
-function PaletteProvider:get_default(user_settings:UserSettings, background_mode:vim.BackgroundMode):HsvPalette
-   local palette:HsvPalette = self:_try_get_user_palette(user_settings.default_palette, user_settings, background_mode)
+function PaletteProvider:try_get_palette(name:string, user_settings:UserSettings, background_mode:vim.BackgroundMode):HsvPalette
+   local palette:HsvPalette = self:_try_get_user_palette(name, user_settings, background_mode)
 
    if palette == nil then
-      palette = self._builtin_palettes[user_settings.default_palette]
+      palette = self._builtin_palettes[name]
    end
 
-   asserts.that(palette ~= nil, "Could not find any palette with name '%s'", user_settings.default_palette)
+   return palette
+end
+
+function PaletteProvider:get_palette(name:string, user_settings:UserSettings, background_mode:vim.BackgroundMode):HsvPalette
+   local palette = self:try_get_palette(name, user_settings, background_mode)
+   asserts.that(palette ~= nil, "Could not find any palette with name '%s'", name)
    return palette
 end
 

@@ -40,7 +40,7 @@ function ApiImpl:__init()
    self._modified_palette_contrast = 1
 end
 
-function ApiImpl:setup(settings_overrides:UserSettings)
+function ApiImpl:change_settings(settings_overrides:UserSettings)
    log.verbose = settings_overrides.verbose_logs
    self._user_settings = vim.tbl_deep_extend("force", self._user_settings, settings_overrides or {}) as UserSettings
    log.debug("Received call to setup()")
@@ -48,7 +48,8 @@ end
 
 function ApiImpl:lazy_get_current_palette():HsvPalette
    if self._current_palette == null then
-      self._current_palette = self._palette_provider:get_default(self._user_settings, vim.o.background)
+      asserts.that(self._user_settings.default_palette ~= nil, "default_palette is unset")
+      self._current_palette = self._palette_provider:get_palette(self._user_settings.default_palette, self._user_settings, vim.o.background)
       asserts.that(self._modified_palette == null)
    end
 
@@ -116,12 +117,33 @@ function ApiImpl:set_current_palette(palette:HsvPalette)
    self:_reset_modified_palette()
 end
 
-function ApiImpl:generate_new_palette(theme_prompt:string, callback:function(HsvPalette))
-   asserts.that(self._user_settings.openai_api_key ~= nil, "No OpenAI API key provided!  Please provide to text-to-colorscheme setup() method and try again")
+function ApiImpl:lazy_generate_new_palette(theme_prompt:string, callback:function(HsvPalette))
+   asserts.that(theme_prompt ~= nil, "No theme provided to generate_new_palette method")
 
-   self._open_ai:generate_new_palette(theme_prompt, self._user_settings, function(openai_palette:HexPalette)
-      log.info("Successfully received palette for theme '%s' from openai", theme_prompt)
-      callback(color_util.hex_palette_to_hsv_palette(openai_palette))
+   log.info("Looking up existing theme for prompt '%s'", theme_prompt)
+   local existing_palette = self._palette_provider:try_get_palette(theme_prompt, self._user_settings, vim.o.background)
+
+   if existing_palette == nil then
+      log.info("No existing theme for prompt '%s' found.  Generating new one...", theme_prompt)
+
+      asserts.that(self._user_settings.openai_api_key ~= nil, "No OpenAI API key provided!  Please provide to text-to-colorscheme setup() method and try again")
+
+      self._open_ai:generate_new_palette(theme_prompt, self._user_settings, function(openai_palette:HexPalette)
+         log.info("Successfully received palette for theme '%s' from openai", theme_prompt)
+         callback(color_util.hex_palette_to_hsv_palette(openai_palette))
+      end)
+   else
+      log.info("Successfully found existing theme for prompt '%s'", theme_prompt)
+      callback(existing_palette)
+   end
+end
+
+function ApiImpl:lazy_generate_new_palette_and_apply(theme_prompt:string)
+   asserts.that(theme_prompt ~= nil, "No theme provided to generate_new_palette_and_apply method")
+
+   self:lazy_generate_new_palette(theme_prompt, function(palette:HsvPalette)
+      self:set_current_palette(palette)
+      self:apply_current_palette()
    end)
 end
 
