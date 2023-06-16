@@ -48,6 +48,10 @@ function ApiImpl:change_settings(settings_overrides)
    log.debug("Received call to setup()")
 end
 
+function ApiImpl:get_all_palette_names()
+   return self._palette_provider:get_all_palette_names(self._user_settings)
+end
+
 function ApiImpl:lazy_get_current_palette()
    if self._current_palette == null then
       asserts.that(self._user_settings.default_palette ~= nil, "default_palette is unset")

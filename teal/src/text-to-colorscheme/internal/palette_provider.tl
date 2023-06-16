@@ -28,6 +28,24 @@ function PaletteProvider:__init()
    self._builtin_palettes = create_builtin_hsv_palettes()
 end
 
+function PaletteProvider:get_all_palette_names(user_settings:UserSettings):{string}
+   local names = {}
+
+   for name, _ in pairs(self._builtin_palettes) do
+      table.insert(names, name)
+   end
+
+   for _, palette in ipairs(user_settings.hex_palettes) do
+      table.insert(names, palette.name)
+   end
+
+   for _, palette in ipairs(user_settings.hsv_palettes) do
+      table.insert(names, palette.name)
+   end
+
+   return names
+end
+
 local function is_valid_user_hsv_palette(palette:HsvPaletteInt):boolean
    if palette.background == nil or palette.foreground == nil or palette.accents == nil or palette.background_mode == nil or palette.name == nil then
       return false

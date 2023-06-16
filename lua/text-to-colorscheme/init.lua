@@ -42,6 +42,14 @@ function api.get_palette()
    return _impl:lazy_get_current_palette()
 end
 
+function api.get_all_palette_names()
+   if not lazy_init() then
+      return
+   end
+
+   return _impl:get_all_palette_names()
+end
+
 function api.load()
    if not lazy_init() then
       return
