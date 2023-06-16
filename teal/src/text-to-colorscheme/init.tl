@@ -22,6 +22,10 @@ local function lazy_init():boolean
    return true
 end
 
+local function trigger_reload()
+   vim.cmd("colo text-to-colorscheme")
+end
+
 function api.setup(settings_overrides:UserSettings)
    if not lazy_init() then
       return
@@ -43,7 +47,16 @@ function api.load()
       return
    end
 
-   _impl:reload_default()
+   _impl:apply_current_palette()
+end
+
+function api.load_default()
+   if not lazy_init() then
+      return
+   end
+
+   _impl:reset_to_default()
+   trigger_reload()
 end
 
 function api.set_palette(palette:HsvPalette)
@@ -52,7 +65,7 @@ function api.set_palette(palette:HsvPalette)
    end
 
    _impl:set_current_palette(palette)
-   _impl:apply_current_palette()
+   trigger_reload()
 end
 
 function api.set_contrast(contrast:number)
@@ -61,6 +74,7 @@ function api.set_contrast(contrast:number)
    end
 
    _impl:set_contrast(contrast)
+   trigger_reload()
 end
 
 function api.add_contrast(offset:number)
@@ -69,6 +83,7 @@ function api.add_contrast(offset:number)
    end
 
    _impl:add_contrast(offset)
+   trigger_reload()
 end
 
 function api.set_saturation_offset(offset:number)
@@ -77,6 +92,7 @@ function api.set_saturation_offset(offset:number)
    end
 
    _impl:set_saturation_offset(offset)
+   trigger_reload()
 end
 
 function api.add_saturation_offset(offset:number)
@@ -85,6 +101,7 @@ function api.add_saturation_offset(offset:number)
    end
 
    _impl:add_saturation_offset(offset)
+   trigger_reload()
 end
 
 function api.user_save_current_palette()
@@ -108,7 +125,10 @@ function api.generate_new_palette_and_apply(theme_prompt:string)
       return
    end
 
-   _impl:lazy_generate_new_palette_and_apply(theme_prompt)
+   _impl:lazy_generate_new_palette(theme_prompt, function(palette:HsvPalette)
+      _impl:set_current_palette(palette)
+      trigger_reload()
+   end)
 end
 
 function api.reset_changes()
@@ -117,6 +137,7 @@ function api.reset_changes()
    end
 
    _impl:reset_changes()
+   trigger_reload()
 end
 
 function api.shuffle_accents()
@@ -125,6 +146,7 @@ function api.shuffle_accents()
    end
 
    _impl:shuffle_accents()
+   trigger_reload()
 end
 
 return api

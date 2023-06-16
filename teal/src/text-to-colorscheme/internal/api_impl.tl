@@ -62,6 +62,9 @@ function ApiImpl:lazy_get_current_palette():HsvPalette
    return self._current_palette
 end
 
+-- Note that only api.load should call this function, to ensure
+-- that other parts of the neovim colorscheme state get updated
+-- at the same time
 function ApiImpl:apply_current_palette()
    log.debug("Reloading color scheme...")
 
@@ -109,10 +112,9 @@ function ApiImpl:_reset_modified_palette()
    self._modified_palette_contrast = 1
 end
 
-function ApiImpl:reload_default()
+function ApiImpl:reset_to_default()
    self._current_palette = null
    self:_reset_modified_palette()
-   self:apply_current_palette()
 end
 
 function ApiImpl:set_current_palette(palette:HsvPalette)
@@ -187,18 +189,8 @@ function ApiImpl:lazy_generate_new_palette(theme_prompt:string, callback:functio
    end
 end
 
-function ApiImpl:lazy_generate_new_palette_and_apply(theme_prompt:string)
-   asserts.that(theme_prompt ~= nil, "No theme provided to generate_new_palette_and_apply method")
-
-   self:lazy_generate_new_palette(theme_prompt, function(palette:HsvPalette)
-      self:set_current_palette(palette)
-      self:apply_current_palette()
-   end)
-end
-
 function ApiImpl:reset_changes()
    self:_reset_modified_palette()
-   self:apply_current_palette()
 end
 
 function ApiImpl:_update_modified_palette()
@@ -219,8 +211,6 @@ function ApiImpl:_update_modified_palette()
    palette.accents = new_accents
 
    self._modified_palette = palette
-
-   self:apply_current_palette()
 end
 
 function ApiImpl:set_contrast(contrast:number)
