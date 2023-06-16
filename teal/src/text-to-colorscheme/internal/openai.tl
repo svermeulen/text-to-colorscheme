@@ -194,7 +194,7 @@ function OpenAi:generate_new_palette(theme_prompt:string, user_settings:UserSett
             local lua_str = response.choices[1].message.content
             log.debug("Received lua back from openai: '%s'", lua_str)
             local obj_provider = load(lua_str)
-            asserts.that(obj_provider ~= nil)
+            asserts.that(obj_provider ~= nil, "Unable to parse response from openai:\n%s", lua_str)
             local result = obj_provider() as HexPalette
             asserts.that(result ~= nil)
             asserts.that(result.name == nil)

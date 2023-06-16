@@ -1,11 +1,11 @@
 
 # text-to-colorscheme
 
-This is a neovim plugin that allows the user to generate new colorschemes by simply providing a text prompt.   Play the following video (and note the commands being typed at the bottom) to see usage:
+This is a neovim plugin that allows the user to generate new colorschemes by simply providing a text prompt.   See the following video (and note the commands being typed at the bottom) to see usage:
 
 ![Plugin usage example](https://i.imgur.com/XGQgzPV.gif)
 
-Under the hood, we are using the given text prompt along with OpenAI's ChatGPT API, to generate the new color scheme
+Under the hood, we are using the given text prompt along with OpenAI's GPT API, to generate the new color scheme
 
 ## Prerequisites
 
@@ -49,6 +49,19 @@ require('text-to-colorscheme').setup {
   },
 }
 ```
+
+Also note that by default, the plugin uses the OpenAI "gpt-4" model, which is currently in limited beta.  If you don't have access to this model via your API key, you may need to switch to another model, which you can do for example like this:
+
+```lua
+require('text-to-colorscheme').setup {
+  ai = {
+     openai_api_key = os.getenv("OPENAI_API_KEY"),
+     gpt_model = "gpt-3.5-turbo",
+  },
+}
+```
+
+However - Note that gpt-4 produces much better results (it seems the extra reasoning power is helpful for this use case).
 
 ## Selecting Different Themes
 
@@ -132,11 +145,11 @@ vim.api.nvim_set_keymap('n', '<f12>', ':T2CAddSaturation 0.1<cr>', {noremap = tr
 vim.api.nvim_set_keymap('n', '<f8>', ':T2CShuffleAccents<cr>', {noremap = true, silent = true})
 ```
 
-For example, play the following to see what it looks like to change the contrast of the "circus" theme forwards, then backwards:
+For example, see the following video to see what it looks like to change the contrast of the "circus" theme forwards, then backwards:
 
 ![changing contrast](https://i.imgur.com/5065Ncu.gif)
 
-And play the following to see what it looks like to change saturation:
+And see the following to see what it looks like to change saturation:
 
 ![changing saturation](https://i.imgur.com/vuCGWDm.gif)
 
