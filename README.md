@@ -109,7 +109,15 @@ vim.api.nvim_set_keymap('n', '<f12>', ':T2CAddSaturation 0.1<cr>', {noremap = tr
 vim.api.nvim_set_keymap('n', '<f8>', ':T2CShuffleAccents<cr>', {noremap = true, silent = true})
 ```
 
-It will be clear after toggling these keys what the effect of these commands are on the color scheme.  Note that once you are satisfied with the changes, you will want to save your theme using the `:T2CSave` command.
+For example, this is what it looks like to change the contrast of the "circus" theme:
+
+![changing contrast](https://i.imgur.com/5065Ncu.gif)
+
+And this is what it looks like to change saturation:
+
+![changing saturation](https://i.imgur.com/vuCGWDm.gif)
+
+Note that once you are satisfied with the changes, you will want to save your theme using the `:T2CSave` command.
 
 One limitation of the above is that the brightness and saturation will be changed uniformly across the entire palette, and you may want to modify these values on a per-color basis.  The easiest way to do this is to change the `save_as_hsv` setting to `true`, then run `:T2CSave`, save to your `init.lua`, and directly modify the saturation/brightness on a per-color basis there.
 
