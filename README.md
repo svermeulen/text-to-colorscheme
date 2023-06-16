@@ -3,7 +3,7 @@
 
 A neovim plugin that allows the user to generate new colorschemes by simply providing a text prompt (using OpenAI's ChatGPT API)
 
-![Plugin usage example](https://i.imgur.com/XGQgzPV.gifv)
+![Plugin usage example](https://i.imgur.com/XGQgzPV.gif)
 
 ## Prerequisites
 
