@@ -1,4 +1,4 @@
-local _tl_compat; if (tonumber((_VERSION or ''):match('[%d.]*$')) or 0) < 5.3 then local p, m = pcall(require, 'compat53.module'); if p then _tl_compat = m end end; local ipairs = _tl_compat and _tl_compat.ipairs or ipairs; local table = _tl_compat and _tl_compat.table or table; local _tl_table_unpack = unpack or table.unpack; local class = require("text-to-colorscheme.internal.class")
+local _tl_compat; if (tonumber((_VERSION or ''):match('[%d.]*$')) or 0) < 5.3 then local p, m = pcall(require, 'compat53.module'); if p then _tl_compat = m end end; local ipairs = _tl_compat and _tl_compat.ipairs or ipairs; local pairs = _tl_compat and _tl_compat.pairs or pairs; local table = _tl_compat and _tl_compat.table or table; local _tl_table_unpack = unpack or table.unpack; local class = require("text-to-colorscheme.internal.class")
 local HexPalette = require("text-to-colorscheme.hex_palette")
 local HsvPalette = require("text-to-colorscheme.hsv_palette")
 local UserSettings = require("text-to-colorscheme.user_settings")
@@ -26,6 +26,24 @@ end
 
 function PaletteProvider:__init()
    self._builtin_palettes = create_builtin_hsv_palettes()
+end
+
+function PaletteProvider:get_all_palette_names(user_settings)
+   local names = {}
+
+   for name, _ in pairs(self._builtin_palettes) do
+      table.insert(names, name)
+   end
+
+   for _, palette in ipairs(user_settings.hex_palettes) do
+      table.insert(names, palette.name)
+   end
+
+   for _, palette in ipairs(user_settings.hsv_palettes) do
+      table.insert(names, palette.name)
+   end
+
+   return names
 end
 
 local function is_valid_user_hsv_palette(palette)
@@ -100,14 +118,19 @@ function PaletteProvider:_try_get_user_palette(name, user_settings, background_m
    return nil
 end
 
-function PaletteProvider:get_default(user_settings, background_mode)
-   local palette = self:_try_get_user_palette(user_settings.default_palette, user_settings, background_mode)
+function PaletteProvider:try_get_palette(name, user_settings, background_mode)
+   local palette = self:_try_get_user_palette(name, user_settings, background_mode)
 
    if palette == nil then
-      palette = self._builtin_palettes[user_settings.default_palette]
+      palette = self._builtin_palettes[name]
    end
 
-   asserts.that(palette ~= nil, "Could not find any palette with name '%s'", user_settings.default_palette)
+   return palette
+end
+
+function PaletteProvider:get_palette(name, user_settings, background_mode)
+   local palette = self:try_get_palette(name, user_settings, background_mode)
+   asserts.that(palette ~= nil, "Could not find any palette with name '%s'", name)
    return palette
 end
 

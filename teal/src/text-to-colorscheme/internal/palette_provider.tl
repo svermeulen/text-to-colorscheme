@@ -28,6 +28,24 @@ function PaletteProvider:__init()
    self._builtin_palettes = create_builtin_hsv_palettes()
 end
 
+function PaletteProvider:get_all_palette_names(user_settings:UserSettings):{string}
+   local names = {}
+
+   for name, _ in pairs(self._builtin_palettes) do
+      table.insert(names, name)
+   end
+
+   for _, palette in ipairs(user_settings.hex_palettes) do
+      table.insert(names, palette.name)
+   end
+
+   for _, palette in ipairs(user_settings.hsv_palettes) do
+      table.insert(names, palette.name)
+   end
+
+   return names
+end
+
 local function is_valid_user_hsv_palette(palette:HsvPaletteInt):boolean
    if palette.background == nil or palette.foreground == nil or palette.accents == nil or palette.background_mode == nil or palette.name == nil then
       return false
@@ -100,14 +118,19 @@ function PaletteProvider:_try_get_user_palette(name:string, user_settings:UserSe
    return nil
 end
 
-function PaletteProvider:get_default(user_settings:UserSettings, background_mode:vim.BackgroundMode):HsvPalette
-   local palette:HsvPalette = self:_try_get_user_palette(user_settings.default_palette, user_settings, background_mode)
+function PaletteProvider:try_get_palette(name:string, user_settings:UserSettings, background_mode:vim.BackgroundMode):HsvPalette
+   local palette:HsvPalette = self:_try_get_user_palette(name, user_settings, background_mode)
 
    if palette == nil then
-      palette = self._builtin_palettes[user_settings.default_palette]
+      palette = self._builtin_palettes[name]
    end
 
-   asserts.that(palette ~= nil, "Could not find any palette with name '%s'", user_settings.default_palette)
+   return palette
+end
+
+function PaletteProvider:get_palette(name:string, user_settings:UserSettings, background_mode:vim.BackgroundMode):HsvPalette
+   local palette = self:try_get_palette(name, user_settings, background_mode)
+   asserts.that(palette ~= nil, "Could not find any palette with name '%s'", name)
    return palette
 end
 

@@ -5,8 +5,14 @@ return function()
    return {
       undercurl = true,
       underline = true,
-      gpt_model = "gpt-4",
-      openai_api_key = nil,
+      ai = {
+         gpt_model = "gpt-4",
+         openai_api_key = nil,
+         auto_darken_greens = true,
+         green_darkening_amount = 0.85,
+         minimum_foreground_contrast = 0.4,
+         enable_minimum_foreground_contrast = true,
+      },
       verbose_logs = false,
       bold = true,
       italic = {

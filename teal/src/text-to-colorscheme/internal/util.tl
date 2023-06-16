@@ -46,7 +46,7 @@ function util.round(value:number):integer
    return math.floor(value + 0.5)
 end
 
-function util.shuffle(list:{any}):{any}
+function util.shuffle<T>(list:{T}):{T}
     local n = #list
     while n > 1 do
         local k = math.random(n)

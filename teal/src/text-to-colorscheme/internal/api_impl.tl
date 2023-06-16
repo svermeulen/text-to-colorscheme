@@ -24,6 +24,7 @@ local record ApiImpl
    _modified_palette:HsvPalette
    _modified_palette_contrast:number
    _modified_palette_saturation_offset:number
+   _modified_palette_accent_order:{integer}
 
    metamethod __call: function(self: ApiImpl): ApiImpl
 end
@@ -37,18 +38,24 @@ function ApiImpl:__init()
 
    self._modified_palette = null
    self._modified_palette_saturation_offset = 0
+   self._modified_palette_accent_order = {1, 2, 3, 4, 5, 6, 7}
    self._modified_palette_contrast = 1
 end
 
-function ApiImpl:setup(settings_overrides:UserSettings)
+function ApiImpl:change_settings(settings_overrides:UserSettings)
    log.verbose = settings_overrides.verbose_logs
    self._user_settings = vim.tbl_deep_extend("force", self._user_settings, settings_overrides or {}) as UserSettings
    log.debug("Received call to setup()")
 end
 
+function ApiImpl:get_all_palette_names():{string}
+   return self._palette_provider:get_all_palette_names(self._user_settings)
+end
+
 function ApiImpl:lazy_get_current_palette():HsvPalette
    if self._current_palette == null then
-      self._current_palette = self._palette_provider:get_default(self._user_settings, vim.o.background)
+      asserts.that(self._user_settings.default_palette ~= nil, "default_palette is unset")
+      self._current_palette = self._palette_provider:get_palette(self._user_settings.default_palette, self._user_settings, vim.o.background)
       asserts.that(self._modified_palette == null)
    end
 
@@ -59,6 +66,9 @@ function ApiImpl:lazy_get_current_palette():HsvPalette
    return self._current_palette
 end
 
+-- Note that only api.load should call this function, to ensure
+-- that other parts of the neovim colorscheme state get updated
+-- at the same time
 function ApiImpl:apply_current_palette()
    log.debug("Reloading color scheme...")
 
@@ -102,13 +112,13 @@ end
 function ApiImpl:_reset_modified_palette()
    self._modified_palette = null
    self._modified_palette_saturation_offset = 0
+   self._modified_palette_accent_order = {1, 2, 3, 4, 5, 6, 7}
    self._modified_palette_contrast = 1
 end
 
-function ApiImpl:reload_default()
+function ApiImpl:reset_to_default()
    self._current_palette = null
    self:_reset_modified_palette()
-   self:apply_current_palette()
 end
 
 function ApiImpl:set_current_palette(palette:HsvPalette)
@@ -116,31 +126,102 @@ function ApiImpl:set_current_palette(palette:HsvPalette)
    self:_reset_modified_palette()
 end
 
+function ApiImpl:_touch_up_generated_palette(palette:HsvPalette):HsvPalette
+   local min_fg_contrast = self._user_settings.ai.minimum_foreground_contrast
+
+   local function adjust_foreground(fg:HsvColor):HsvColor
+      if self._user_settings.ai.enable_minimum_foreground_contrast then
+         local contrast = fg.v - palette.background.v
+
+         if contrast < min_fg_contrast then
+            fg = HsvColor(fg.h, fg.s, util.clamp(palette.background.v + min_fg_contrast, 0, 1))
+         end
+      end
+
+      if self._user_settings.ai.auto_darken_greens then
+         -- The human eye views green as brighter, and HSV does not account for this,
+         -- so we do that in a special case way here instead
+         local is_green = fg.h > 1/6 and fg.h < 1/2
+
+         if is_green then
+            fg = HsvColor(fg.h, fg.s, self._user_settings.ai.green_darkening_amount * fg.v)
+         end
+      end
+
+      return fg
+   end
+
+   asserts.that(#palette.accents == 7)
+
+   return {
+      name = palette.name,
+      background_mode = palette.background_mode,
+      background = palette.background,
+      foreground = adjust_foreground(palette.foreground),
+      accents = {
+         adjust_foreground(palette.accents[1]),
+         adjust_foreground(palette.accents[2]),
+         adjust_foreground(palette.accents[3]),
+         adjust_foreground(palette.accents[4]),
+         adjust_foreground(palette.accents[5]),
+         adjust_foreground(palette.accents[6]),
+         adjust_foreground(palette.accents[7]),
+      }
+   }
+end
+
+function ApiImpl:select_palette(name:string)
+   asserts.that(name ~= nil, "No theme provided to generate_new_palette method")
+
+   log.info("Looking up palette with name '%s'", name)
+   local existing_palette = self._palette_provider:get_palette(name, self._user_settings, vim.o.background)
+   self:set_current_palette(existing_palette)
+end
+
 function ApiImpl:generate_new_palette(theme_prompt:string, callback:function(HsvPalette))
-   asserts.that(self._user_settings.openai_api_key ~= nil, "No OpenAI API key provided!  Please provide to text-to-colorscheme setup() method and try again")
+   asserts.that(theme_prompt ~= nil, "No theme provided to generate_new_palette method")
+   asserts.that(self._user_settings.ai.openai_api_key ~= nil, "No OpenAI API key provided!  Please provide to text-to-colorscheme setup() method and try again")
 
    self._open_ai:generate_new_palette(theme_prompt, self._user_settings, function(openai_palette:HexPalette)
       log.info("Successfully received palette for theme '%s' from openai", theme_prompt)
-      callback(color_util.hex_palette_to_hsv_palette(openai_palette))
+      local hsv_palette = color_util.hex_palette_to_hsv_palette(openai_palette)
+      hsv_palette = self:_touch_up_generated_palette(hsv_palette)
+      callback(hsv_palette)
    end)
+end
+
+function ApiImpl:reset_changes()
+   self:_reset_modified_palette()
 end
 
 function ApiImpl:_update_modified_palette()
    asserts.that(self._modified_palette_contrast >= 0)
    asserts.that(self._modified_palette_saturation_offset >= -1 and self._modified_palette_saturation_offset <= 1)
+   asserts.that(#self._modified_palette_accent_order == 7)
 
    local palette = self._current_palette
    palette = color_util.add_contrast(palette, self._modified_palette_contrast)
    palette = color_util.offset_saturation(palette, self._modified_palette_saturation_offset)
-   self._modified_palette = palette
 
-   self:apply_current_palette()
+   local new_accents = {}
+
+   for _, index in ipairs(self._modified_palette_accent_order) do
+      table.insert(new_accents, palette.accents[index])
+   end
+
+   palette.accents = new_accents
+
+   self._modified_palette = palette
 end
 
 function ApiImpl:set_contrast(contrast:number)
    asserts.that(self._current_palette ~= null)
-   self._modified_palette_contrast = util.clamp(contrast, 0, 2)
+   if contrast < 0 then
+      contrast = 0
+   end
+   self._modified_palette_contrast = contrast
    self:_update_modified_palette()
+   log.notify("Contrast: %s", self._modified_palette_contrast)
 end
 
 function ApiImpl:add_contrast(contrast:number)
@@ -151,10 +232,49 @@ function ApiImpl:set_saturation_offset(offset:number)
    asserts.that(self._current_palette ~= null)
    self._modified_palette_saturation_offset = util.clamp(offset, -1, 1)
    self:_update_modified_palette()
+   log.notify("Saturation Offset: %s", self._modified_palette_saturation_offset)
 end
 
 function ApiImpl:add_saturation_offset(offset:number)
    self:set_saturation_offset(self._modified_palette_saturation_offset + offset)
+end
+
+function ApiImpl:shuffle_accents()
+   asserts.that(self._current_palette ~= null)
+   self._modified_palette_accent_order = util.shuffle({1, 2, 3, 4, 5, 6, 7})
+   self:_update_modified_palette()
+end
+
+function ApiImpl:_add_save_popup_highlights(buf:integer, palette:HexPalette)
+   local highlight_matches = {}
+   vim.api.nvim_command('highlight T2CSavePopupBackground guifg=#ffffff guibg=' .. palette.background)
+   table.insert(highlight_matches, {palette.background, "T2CSavePopupBackground"})
+   vim.api.nvim_command('highlight T2CSavePopupForeground guifg=' .. palette.foreground .. ' guibg=' .. palette.background)
+   table.insert(highlight_matches, {palette.foreground, "T2CSavePopupForeground"})
+   for index, value in ipairs(palette.accents) do
+      local highlight_name = 'T2CSavePopupAccent' .. tostring(index)
+      vim.api.nvim_command('highlight ' .. highlight_name .. ' guifg=' .. value .. ' guibg=' .. palette.background)
+      table.insert(highlight_matches, {value, highlight_name})
+   end
+
+   local ns_id = vim.api.nvim_create_namespace('T2CSavePopupHighlights')
+   local line_count = vim.api.nvim_buf_line_count(buf)
+
+   for i = 0, line_count - 1 do
+      local line = vim.api.nvim_buf_get_lines(buf, i, i+1, false)[1]
+
+      for _, pair in ipairs(highlight_matches) do
+         local text, highlight_group = table.unpack(pair)
+
+         if line:find(text) ~= nil then
+            local non_whitespace_start = line:find("%S")
+            if non_whitespace_start then
+               vim.api.nvim_buf_add_highlight(buf, ns_id, highlight_group, i, non_whitespace_start-1, #line)
+               break
+            end
+         end
+      end
+   end
 end
 
 function ApiImpl:user_save_current_palette()
@@ -230,6 +350,8 @@ function ApiImpl:user_save_current_palette()
       col = col,
       row = row
    })
+
+   self:_add_save_popup_highlights(buf, color_util.hsv_palette_to_hex_palette(palette))
 
    local cmd = string.format('autocmd WinLeave <buffer=%s> :bwipeout!', buf)
    vim.api.nvim_command('augroup MyCloseScratch')
