@@ -1,7 +1,7 @@
 
 # text-to-colorscheme
 
-This is a neovim plugin that allows the user to generate new colorschemes by simply providing a text prompt.   Play the following GIF (and note the commands being typed at the bottom) to see usage:
+This is a neovim plugin that allows the user to generate new colorschemes by simply providing a text prompt.   Play the following video (and note the commands being typed at the bottom) to see usage:
 
 ![Plugin usage example](https://i.imgur.com/XGQgzPV.gif)
 
@@ -64,7 +64,7 @@ To generate a custom theme, execute the command:
 :T2CGenerate <text prompt>
 ```
 
-Where `<text prompt>` is any text describing the kind of color scheme you want (see above gif for some examples).  I find it helps to be as descriptive as possible to give the AI more information to work with. After doing this, it will take 5-10 seconds for the new color scheme to be generated, at which point it will be automatically loaded (the GIF above skips this part).
+Where `<text prompt>` is any text describing the kind of color scheme you want (see above video for some examples).  I find it helps to be as descriptive as possible to give the AI more information to work with. After doing this, it will take 5-10 seconds for the new color scheme to be generated, at which point it will be automatically loaded (the video above skips this part).
 
 Note that `text-to-colorscheme` [currently only supports dark themes](https://github.com/svermeulen/text-to-colorscheme/issues/1)
 
