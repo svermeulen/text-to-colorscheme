@@ -95,7 +95,7 @@ require('text-to-colorscheme').setup {
 
 Note that in addition to adding to the `hex_palettes` list, we also need to set a value for `default_palette` above.
 
-After doing the above, your custom themes should then be suggested when running the `:T2CSelect ` command.
+After doing the above, your custom themes should then be suggested when running the `:T2CSelect <tab>` command.
 
 ## Tweaking Theme
 
@@ -131,7 +131,7 @@ And play the following to see what it looks like to change saturation:
 
 Note that once you are satisfied with the changes, you will want to save your theme using the `:T2CSave` command.
 
-One limitation of the above is that the brightness and saturation will be changed uniformly across the entire palette, and you may want to modify these values on a per-color basis.  The easiest way to do this is to change the `save_as_hsv` setting to `true`, then run `:T2CSave`, save to your `init.lua`, and directly modify the saturation/brightness on a per-color basis there.
+One limitation of the above is that the brightness and saturation will be changed uniformly across the entire palette, and you may want to modify these values on a per-color basis.  The easiest way to do this is to change the `save_as_hsv` setting to `true`, then run `:T2CSave`, save to your `init.lua`, and directly modify the saturation/brightness on a per-color basis there.  Note that when using `save_as_hsv` you need to add to the `hsv_palettes` setting instead of `hex_palettes`.
 
 ## Advanced Configuration
 
