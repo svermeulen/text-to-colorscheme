@@ -33,6 +33,6 @@ return function():UserSettings
       hsv_palettes = {},
       hex_palettes = {},
       overrides = {},
-      default_palette = "urban autumn",
+      default_palette = "gruvbox",
    }
 end

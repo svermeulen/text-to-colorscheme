@@ -1,12 +1,10 @@
 
 local HsvPaletteInt = require("text-to-colorscheme.hsv_palette_int")
 
-
-
 return function()
    return {
       {
-         name = "urban autumn",
+         name = "gruvbox",
          background_mode = "dark",
          background = { 0, 0, 15 },
          foreground = { 48, 21, 100 },
@@ -21,7 +19,7 @@ return function()
          },
       },
       {
-         name = "cosmic orchard",
+         name = "onedark",
          background_mode = "dark",
          background = { 220, 23, 20 },
          foreground = { 219, 10, 75 },
@@ -51,7 +49,7 @@ return function()
          },
       },
       {
-         name = "aurora dreams",
+         name = "solarized",
          background_mode = "dark",
          background = { 192, 89, 24 },
          foreground = { 186, 13, 67 },
@@ -66,7 +64,7 @@ return function()
          },
       },
       {
-         name = "oceanic aurora",
+         name = "OceanicNext",
          background_mode = "dark",
          background = { 202, 48, 20 },
          foreground = { 219, 7, 91 },

@@ -42,6 +42,15 @@ end
 local function get_example_messages()
    local result = {}
 
+
+
+   local descriptive_name_map = {
+      ["gruvbox"] = "urban autumn",
+      ["onedark"] = "cosmic orchard",
+      ["solarized"] = "aurora dreams",
+      ["OceanicNext"] = "oceanic aurora",
+   }
+
    for _, hsv_int_palette in ipairs(builtin_palettes_provider()) do
       local hsv_palette = color_util.hsv_palette_int_to_hsv_palette(hsv_int_palette)
 
@@ -52,7 +61,13 @@ local function get_example_messages()
       for _, accent in ipairs(hsv_palette.accents) do
          table.insert(format_args, color_util.hsv_to_hex(accent))
       end
-      result[hsv_palette.name] = string.format([[return {
+      local name = hsv_palette.name
+
+      if descriptive_name_map[name] ~= nil then
+         name = descriptive_name_map[name]
+      end
+
+      result[name] = string.format([[return {
   background = \"%s\",
   foreground = \"%s\",
   accents = {

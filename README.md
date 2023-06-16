@@ -1,7 +1,7 @@
 
 # text-to-colorscheme
 
-A neovim plugin that allows the user to generate new colorschemes by simply providing a text prompt (using OpenAI's ChatGPT API).   Play the following GIF to see what the generated themes can look like:
+This is a neovim plugin that allows the user to generate new colorschemes by simply providing a text prompt (using OpenAI's ChatGPT API).   Play the following GIF (and note the commands being typed at the bottom) to see usage:
 
 ![Plugin usage example](https://i.imgur.com/XGQgzPV.gif)
 
@@ -16,6 +16,8 @@ Using `packer`
 ```lua
 use { "svermeulen/text-to-colorscheme.nvim" }
 ```
+
+Other plugin managers should be similar
 
 ## Basic Usage
 
@@ -33,13 +35,13 @@ require('text-to-colorscheme').setup {
 vim.cmd([[colorscheme text-to-colorscheme]])
 ```
 
-In order to generate new themes, you will need an API key from OpenAI.  If you don't already have one, you will need to sign up at [openai.com](https://openai.com/)
+In order to generate new themes, you will need an API key from OpenAI, and then add this to `openai_api_key` setting as above.  If you don't already have one, you will need to sign up at [openai.com](https://openai.com/)
 
 ## Selecting Different Themes
 
 When a theme name is not provided, the plugin will default to using a theme resembling [gruvbox](https://github.com/ellisonleao/gruvbox.nvim).
 
-To select a different theme, use the `T2CSelect` command.  If you execute `:T2CSelect ` you should see a list of themes to choose from.  There are a number of built-in themes based on the most popular vim colorschemes.  To generate your own and add to this list, see next section.
+To select a different theme, use the `T2CSelect` command.  If you execute `:T2CSelect <tab>` you should see a list of themes to choose from.  There are a number of built-in themes based on the most popular vim colorschemes.  To generate your own and add to this list, see next section.
 
 ## Generating Theme
 
@@ -169,7 +171,7 @@ require("text-to-colorscheme").setup({
   hsv_palettes = {},
   hex_palettes = {},
   overrides = {},
-  default_palette = "urban autumn", -- aka gruvbox. Override to use something from hsv_palettes or hex_palettes
+  default_palette = "gruvbox",
 })
 ```
 

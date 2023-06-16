@@ -1,12 +1,10 @@
 
 local HsvPaletteInt <const> = require("text-to-colorscheme.hsv_palette_int")
 
--- Note here that we use descriptive names instead of their original names
--- because we also use these as examples for chat gpt to extrapolate from
 return function():{HsvPaletteInt}
    return { 
       {
-         name = "urban autumn", -- aka gruvbox
+         name = "gruvbox",
          background_mode = "dark",
          background = {0, 0, 15}, -- #262626
          foreground = {48, 21, 100}, -- #fff4c9
@@ -21,7 +19,7 @@ return function():{HsvPaletteInt}
          }
       },
       {
-         name = "cosmic orchard",
+         name = "onedark",
          background_mode = "dark",
          background = {220, 23, 20}, -- #282c34
          foreground = {219, 10, 75}, -- #abb2bf
@@ -51,7 +49,7 @@ return function():{HsvPaletteInt}
          }
       },
       {
-         name = "aurora dreams",
+         name = "solarized",
          background_mode = "dark",
          background = {192, 89, 24}, -- #06323d
          foreground = {186, 13, 67}, -- #94a7aa
@@ -66,7 +64,7 @@ return function():{HsvPaletteInt}
          }
       },
       {
-         name = "oceanic aurora", -- aka OceanicNext
+         name = "OceanicNext",
          background_mode = "dark",
          background = {202, 48, 20}, -- #1b2b34
          foreground = {219, 7, 91}, -- #d8dee9
