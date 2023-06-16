@@ -58,15 +58,13 @@ To select a different theme, use the `T2CSelect` command.  If you execute `:T2CS
 
 ## Generating Theme
 
-When a custom theme is not provided, the plugin will fallback to using a theme resembling [gruvbox](https://github.com/ellisonleao/gruvbox.nvim).
-
-To generate a custom one instead, execute the command:
+To generate a custom theme, execute the command:
 
 ```
 :T2CGenerate <text prompt>
 ```
 
-Where `<text prompt>` is any text describing the kind of color scheme you want (see above gif for some examples).  I find it helps to be as descriptive as possible to give the AI more information to work with. After doing this, it will take 5-10 seconds for the new color scheme to be generated, at which point it will be automatically loaded.
+Where `<text prompt>` is any text describing the kind of color scheme you want (see above gif for some examples).  I find it helps to be as descriptive as possible to give the AI more information to work with. After doing this, it will take 5-10 seconds for the new color scheme to be generated, at which point it will be automatically loaded (the GIF above skips this part).
 
 Note that `text-to-colorscheme` [currently only supports dark themes](https://github.com/svermeulen/text-to-colorscheme/issues/1)
 
