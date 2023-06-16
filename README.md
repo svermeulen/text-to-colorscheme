@@ -1,7 +1,7 @@
 
 # text-to-colorscheme
 
-A neovim plugin that allows the user to generate new colorschemes by simply providing a text prompt (using OpenAI's ChatGPT API)
+A neovim plugin that allows the user to generate new colorschemes by simply providing a text prompt (using OpenAI's ChatGPT API).   Play the following GIF to see what the generated themes can look like:
 
 ![Plugin usage example](https://i.imgur.com/XGQgzPV.gif)
 
@@ -43,7 +43,7 @@ To generate a custom one instead, execute the command:
 :T2CGenerate <text prompt>
 ```
 
-Where `<text prompt>` is any text describing the kind of color scheme you want (eg: `jungle`, `western saloon`, `ocean deep`, `autumn leaves`, or something more imaginative!).  I find it helps to be as descriptive as possible to give the generator more information to work with. After doing this, it will take 5-10 seconds for the new color scheme to be generated, at which point it will be automatically loaded.
+Where `<text prompt>` is any text describing the kind of color scheme you want (see above gif for some examples).  I find it helps to be as descriptive as possible to give the AI more information to work with. After doing this, it will take 5-10 seconds for the new color scheme to be generated, at which point it will be automatically loaded.
 
 Note that `text-to-colorscheme` [currently only supports dark themes](https://github.com/svermeulen/text-to-colorscheme/issues/1)
 
