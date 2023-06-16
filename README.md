@@ -1,13 +1,16 @@
 
 # text-to-colorscheme
 
-This is a neovim plugin that allows the user to generate new colorschemes by simply providing a text prompt (using OpenAI's ChatGPT API).   Play the following GIF (and note the commands being typed at the bottom) to see usage:
+This is a neovim plugin that allows the user to generate new colorschemes by simply providing a text prompt.   Play the following GIF (and note the commands being typed at the bottom) to see usage:
 
 ![Plugin usage example](https://i.imgur.com/XGQgzPV.gif)
 
+Under the hood, we are using the given text prompt along with OpenAI's ChatGPT API, to generate the new color scheme
+
 ## Prerequisites
 
-Neovim 0.8.0+
+1. Neovim 0.8.0 or higher
+2. An OpenAI API key. To use this plugin, you must have an OpenAI API key, as it is needed to generate new themes. If you don't already have one, sign up at [openai.com](https://openai.com/)
 
 ## Installation
 
