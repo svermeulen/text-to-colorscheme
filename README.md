@@ -40,7 +40,7 @@ vim.cmd([[colorscheme text-to-colorscheme]])
 
 In order to generate new themes, you will need an API key from OpenAI, and then add this to `openai_api_key` setting as above.  If you don't already have one, you will need to sign up at [openai.com](https://openai.com/)
 
-Note also that if your `init.lua` is in source control, it is not good practice to use your api key directly.  Often a better approach is to get it from an environment variable instead, which you can do like this:
+Note also that if your `init.lua` is in source control, it is not good practice to reference your api key directly.  Often a better approach is to get it from an environment variable instead, which you can do like this:
 
 ```lua
 require('text-to-colorscheme').setup {
