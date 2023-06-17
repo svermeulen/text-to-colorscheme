@@ -183,6 +183,28 @@ function OpenAi:generate_new_palette(theme_prompt:string, user_settings:UserSett
 
    local progress_timer = vim.loop.new_timer()
 
+   local function is_valid_result(result:HexPalette):boolean
+      if result == nil then
+         return false
+      end
+
+      if not color_util.is_valid_hex_color(result.background) or not color_util.is_valid_hex_color(result.foreground) then
+         return false
+      end
+
+      if result.accents == nil or #result.accents ~= 7 then
+         return false
+      end
+
+      for _, value in ipairs(result.accents) do
+         if not color_util.is_valid_hex_color(value) then
+            return false
+         end
+      end
+
+      return true
+   end
+
    local function onexit(code:integer)
       progress_timer:stop()
       local all_data_str = table.concat(all_data, "")
@@ -196,11 +218,7 @@ function OpenAi:generate_new_palette(theme_prompt:string, user_settings:UserSett
             local obj_provider = load(lua_str)
             asserts.that(obj_provider ~= nil, "Unable to parse response from openai:\n%s", lua_str)
             local result = obj_provider() as HexPalette
-            asserts.that(result ~= nil)
-            asserts.that(result.name == nil)
-            asserts.that(color_util.is_valid_hex_color(result.background))
-            asserts.that(color_util.is_valid_hex_color(result.foreground))
-            asserts.that(#result.accents == 7)
+            asserts.that(is_valid_result(result), "Received unexpected response from OpenAI:\n%s", lua_str)
             result.name = theme_prompt
             -- TODO - handle light mode too
             result.background_mode = "dark"
