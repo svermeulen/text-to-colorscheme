@@ -239,9 +239,24 @@ end
 function color_util.add_contrast(palette, contrast)
    asserts.that(contrast ~= nil and palette ~= nil)
 
-   local standard_foreground_brightness = 0.85
-   local standard_background_brightness = 0.2
-   local mid_brightness = standard_background_brightness + 0.2 * (standard_foreground_brightness - standard_background_brightness)
+   local function get_average_fg_brightness()
+      local all_foregrounds = util.shallow_clone(palette.accents)
+      table.insert(all_foregrounds, palette.foreground)
+
+      local sum = 0.0
+
+      for _, fg in ipairs(all_foregrounds) do
+         sum = sum + fg.v
+      end
+
+      return sum / #all_foregrounds
+   end
+
+   local foreground_brightness = get_average_fg_brightness()
+   local background_brightness = palette.background.v
+
+
+   local mid_brightness = background_brightness + 0.2 * (foreground_brightness - background_brightness)
 
    local function adjust(color)
       local new_brightness = util.clamp(mid_brightness + (color.v - mid_brightness) * contrast, 0, 1)
