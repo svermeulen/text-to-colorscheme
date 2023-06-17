@@ -56,7 +56,7 @@ Also note that by default, the plugin uses the OpenAI "gpt-4" model, which is cu
 require('text-to-colorscheme').setup {
   ai = {
      openai_api_key = os.getenv("OPENAI_API_KEY"),
-     gpt_model = "gpt-3.5-turbo",
+     gpt_model = "gpt-3.5-turbo-0613",
   },
 }
 ```
