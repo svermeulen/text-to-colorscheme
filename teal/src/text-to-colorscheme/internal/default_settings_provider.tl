@@ -11,7 +11,7 @@ return function():UserSettings
          auto_darken_greens = true,
          green_darkening_amount = 0.85,
          minimum_foreground_contrast = 0.4,
-         enable_minimum_foreground_contrast = false,
+         enable_minimum_foreground_contrast = true,
       },
       verbose_logs = false,
       bold = true,
