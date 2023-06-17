@@ -110,10 +110,10 @@ require('text-to-colorscheme').setup {
            "#d15a5a",
            "#5ad1b3",
            "#5a8ad1",
-        }
+        },
      },
-     default_palette = "jungle",
-  }
+  },
+  default_palette = "jungle",
 }
 ```
 
