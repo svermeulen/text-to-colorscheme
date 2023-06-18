@@ -38,8 +38,6 @@ require('text-to-colorscheme').setup {
 vim.cmd([[colorscheme text-to-colorscheme]])
 ```
 
-In order to generate new themes, you will need an API key from OpenAI, and then add this to `openai_api_key` setting as above.  If you don't already have one, you will need to sign up at [openai.com](https://openai.com/)
-
 Note also that if your `init.lua` is in source control, it is not good practice to reference your api key directly.  Often a better approach is to get it from an environment variable instead, which you can do like this:
 
 ```lua
@@ -123,9 +121,9 @@ After doing the above, your custom themes should then be suggested when running 
 
 ## Tweaking Theme
 
-Sometimes, some text prompts do not always translate well to a new color scheme on the first try.  One approach to fixing this is to modify the text prompt and try again.  In some cases though, the generated color scheme is good, and just needs some minor adjustments around contrast, saturation, or color order. For these cases, `text-to-colorscheme` comes with the following commands that help you do this:
+Sometimes, some text prompts do not always translate well to a new color scheme on the first try.  One approach to fixing this is to modify the text prompt and try again (or sometimes just trying the same prompt again).  In some cases though, the generated color scheme is good, and just needs some minor adjustments around contrast, saturation, or color order. For these cases, `text-to-colorscheme` comes with the following commands that help you do this:
 
-* `:T2CAddContrast X` - Call this if you want the foreground colors to be more or less distinct from the background colors.  A positive value here will modify the current color scheme to have the foreground more distinct from the background, and a negative value will cause the foreground and background to become more similar.
+* `:T2CAddContrast X` - Call this if you are finding that the foreground color is too similar to the background color.  A positive value for X here will modify the current color scheme to have the foreground more distinct from the background, and a negative value will cause the foreground and background to become more similar.
 
 * `:T2CAddSaturation X` - Call this if you want to increase or reduce how intense the foreground colors are.  A lower value here means the color becomes more gray / washed-out.
 
