@@ -12,6 +12,7 @@ return function()
          green_darkening_amount = 0.85,
          minimum_foreground_contrast = 0.4,
          enable_minimum_foreground_contrast = true,
+         temperature = 0.0,
       },
       verbose_logs = false,
       bold = true,

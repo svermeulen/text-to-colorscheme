@@ -22,6 +22,7 @@ local record UserSettings
       green_darkening_amount:number
       minimum_foreground_contrast:number
       enable_minimum_foreground_contrast:boolean
+      temperature:number
    end
 
    save_as_hsv:boolean

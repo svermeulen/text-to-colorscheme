@@ -142,7 +142,7 @@ Return only the new lua code and nothing else.
     '-H', 'Authorization: Bearer ' .. api_key,
     '-d', [[{
       "model": "]] .. user_settings.ai.gpt_model .. [[",
-      "temperature": 0,
+      "temperature": ]] .. tostring(user_settings.ai.temperature) .. [[,
       "messages": [
         {
           "role": "system",
@@ -238,9 +238,9 @@ function OpenAi:generate_new_palette(theme_prompt:string, user_settings:UserSett
 
    local curl_command = self:_construct_curl_command(theme_prompt, user_settings)
 
-   -- if log.verbose then
-   --    log.debug("Executing curl command: %s", vim.inspect(curl_command))
-   -- end
+   if log.verbose then
+      log.debug("Executing curl command: %s", vim.inspect(curl_command))
+   end
 
    local job_id = vim.fn.jobstart(curl_command, {
       on_stdout = onread,

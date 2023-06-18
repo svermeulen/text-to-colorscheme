@@ -172,6 +172,7 @@ require("text-to-colorscheme").setup({
      auto_darken_greens = true,
      minimum_foreground_contrast = 0.4, -- This is used to touch up the generated theme to avoid generating foregrounds that match the background too closely.  Enabled or disabled with enable_minimum_foreground_contrast flag
      enable_minimum_foreground_contrast = true,
+     temperature = 0, -- Set this to a value between 0 and 1, where 0 means it will generate similar looking color schemes every time, and 1 means that each time will be very different.  See openai docs for more information on this setting
   },
   undercurl = true,
   underline = true,
