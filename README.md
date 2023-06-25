@@ -220,3 +220,8 @@ Please note that the override values must follow the attributes from the highlig
 - **italic** - true or false for italic font
 
 Other values can be seen in `:h synIDattr`
+
+# Strong Typing Support
+
+Note that this library is implemented using [Teal](https://github.com/teal-language/tl) and that all the lua files here are generated.  If you are also using Teal, and want your calls to the text-to-colorscheme API strongly typed, you can copy and paste the teal type definition files from `/teal/dist` into your project (or just add this path to your tlconfig.lua file)
+
