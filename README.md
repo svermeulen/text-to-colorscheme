@@ -10,7 +10,7 @@ Under the hood, we are using the given text prompt along with OpenAI's GPT API, 
 ## Prerequisites
 
 1. Neovim 0.8.0 or higher
-2. An OpenAI API key. To use this plugin, you must have an OpenAI API key, as it is needed to generate new themes. If you don't already have one, sign up at [openai.com](https://openai.com/)
+2. (optional) An OpenAI API key. To generate new color schemes, you must have an OpenAI API key. However, if you don't have one, you can still use this plugin with the default set of pre-generated color schemes, or specify custom colors manually as described below.  To get an API key you can sign up at [openai.com](https://openai.com/)
 
 ## Installation
 
