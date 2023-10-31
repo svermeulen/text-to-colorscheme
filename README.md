@@ -172,6 +172,7 @@ require("text-to-colorscheme").setup({
      enable_minimum_foreground_contrast = true,
      temperature = 0, -- Set this to a value between 0 and 1, where 0 means it will generate similar looking color schemes every time, and 1 means that each time will be very different.  See openai docs for more information on this setting
   },
+  disable_builtin_schemes = false,  -- Set to true to disable all pre-generated color schemes, so that only your custom ones show in T2CSelect
   undercurl = true,
   underline = true,
   verbose_logs = false, -- When true, will output logs to echom, to help debugging issues with this plugin
