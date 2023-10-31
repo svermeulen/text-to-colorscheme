@@ -119,6 +119,8 @@ Note that in addition to adding to the `hex_palettes` list, we also need to set 
 
 After doing the above, your custom themes should then be suggested when running the `:T2CSelect <tab>` command.
 
+You might also consider adding some of the community provided themes [here](https://github.com/svermeulen/text-to-colorscheme/wiki/Color-Scheme-Examples)
+
 ## Tweaking Theme
 
 Sometimes, some text prompts do not always translate well to a new color scheme on the first try.  One approach to fixing this is to modify the text prompt and try again (or sometimes just trying the same prompt again).  In some cases though, the generated color scheme is good, and just needs some minor adjustments around contrast, saturation, or color order. For these cases, `text-to-colorscheme` comes with the following commands that help you do this:
