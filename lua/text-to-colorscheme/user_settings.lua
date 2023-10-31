@@ -47,4 +47,5 @@ local UserSettings = {ItalicSettings = {}, AiSettings = {}, }
 
 
 
+
 return UserSettings
