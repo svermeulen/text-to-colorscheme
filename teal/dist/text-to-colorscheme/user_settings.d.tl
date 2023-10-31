@@ -27,6 +27,7 @@ local record UserSettings
 
    save_as_hsv:boolean
 
+   disable_builtin_schemes:boolean
    undercurl:boolean
    underline:boolean
    bold:boolean

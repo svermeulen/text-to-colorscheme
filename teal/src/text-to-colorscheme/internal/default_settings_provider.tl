@@ -28,6 +28,7 @@ return function():UserSettings
       invert_signs = false,
       invert_tabline = false,
       invert_intend_guides = false,
+      disable_builtin_schemes = false,
       inverse = true,
       dim_inactive = false,
       transparent_mode = false,

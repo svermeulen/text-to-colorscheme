@@ -31,8 +31,10 @@ end
 function PaletteProvider:get_all_palette_names(user_settings:UserSettings):{string}
    local names = {}
 
-   for name, _ in pairs(self._builtin_palettes) do
-      table.insert(names, name)
+   if not user_settings.disable_builtin_schemes then
+      for name, _ in pairs(self._builtin_palettes) do
+         table.insert(names, name)
+      end
    end
 
    for _, palette in ipairs(user_settings.hex_palettes) do
