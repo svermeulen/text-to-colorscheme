@@ -10,7 +10,7 @@ Under the hood, we are using the given text prompt along with OpenAI's GPT API, 
 ## Prerequisites
 
 1. Neovim 0.8.0 or higher
-2. (optional) An OpenAI API key. To generate new color schemes, you must have an OpenAI API key. However, if you don't have one, you can still use this plugin with the default set of pre-generated color schemes, or specify custom colors manually as described below.  To get an API key you can sign up at [openai.com](https://openai.com/)
+2. (optional) An OpenAI API key. To generate new color schemes, you must have an OpenAI API key. However, if you don't have one, you can still use this plugin with the default set of pre-generated color schemes (or any [community provided ones](https://github.com/svermeulen/text-to-colorscheme/wiki/Color-Scheme-Examples)), or specify custom colors manually as described below.  To get an API key you can sign up at [openai.com](https://openai.com/)
 
 ## Installation
 
