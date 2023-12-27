@@ -339,7 +339,7 @@ function GroupsProvider:get_highlight_groups(palette:HsvPalette, config:UserSett
       ["@lsp.type.variable"] = { link = "@variable" },
 
       Normal = config.transparent_mode and { fg = fg1 } or { fg = fg1, bg = bg0 },
-      NormalFloat = config.transparent_mode and { fg = fg1 } or { fg = fg1, bg = bg1 },
+      NormalFloat = config.transparent_mode and { fg = fg1 } or { fg = fg1, bg = transform(bg1, 0.5 * bg_brightness_increment) },
       NormalNC = config.dim_inactive and { fg = fg0, bg = bg1 } or { link = "Normal" },
       CursorLine = { bg = bg1 },
       CursorColumn = { link = "CursorLine" },
