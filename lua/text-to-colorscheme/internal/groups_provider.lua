@@ -344,7 +344,7 @@ function GroupsProvider:get_highlight_groups(palette, config, background_mode)
       CursorLine = { bg = bg1 },
       CursorColumn = { link = "CursorLine" },
       TabLineFill = { fg = bg4, bg = bg1, reverse = config.invert_tabline },
-      TabLineSel = { fg = clr2, bg = bg1, reverse = config.invert_tabline },
+      TabLineSel = { fg = transform(clr2, 10 * bg_brightness_increment), bg = bg1, reverse = config.invert_tabline },
       TabLine = { link = "TabLineFill" },
       MatchParen = { bg = bg3, bold = config.bold },
       ColorColumn = { bg = bg1 },
