@@ -6,6 +6,7 @@ local record UserSettings
    enum GptModel
       "gpt-3.5-turbo"
       "gpt-4"
+      "gpt-4o"
    end
 
    record ItalicSettings

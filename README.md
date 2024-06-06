@@ -48,18 +48,16 @@ require('text-to-colorscheme').setup {
 }
 ```
 
-Also note that by default, the plugin uses the OpenAI "gpt-4" model, which is currently in limited beta.  If you don't have access to this model via your API key, you may need to switch to another model, which you can do for example like this:
+Also note that by default, the plugin uses the OpenAI "gpt-4o" model.  However, if you prefer, you can also specify a different model like this:
 
 ```lua
 require('text-to-colorscheme').setup {
   ai = {
      openai_api_key = os.getenv("OPENAI_API_KEY"),
-     gpt_model = "gpt-3.5-turbo-0613",
+     gpt_model = "gpt-4",
   },
 }
 ```
-
-However - Note that gpt-4 produces much better results (it seems the extra reasoning power is helpful for this use case).
 
 ## Selecting Different Themes
 

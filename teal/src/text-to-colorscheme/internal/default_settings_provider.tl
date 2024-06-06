@@ -6,7 +6,7 @@ return function():UserSettings
       undercurl = true,
       underline = true,
       ai = {
-         gpt_model = "gpt-4",
+         gpt_model = "gpt-4o",
          openai_api_key = nil,
          auto_darken_greens = true,
          green_darkening_amount = 0.85,
